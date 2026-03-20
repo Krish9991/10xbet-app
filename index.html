@@ -17,7 +17,9 @@
         .app-content { flex: 1; overflow-y: auto; padding-bottom: 80px; }
         .page { display: none; padding: 15px; }
         .page.active { display: block; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #0f172a; display: flex; justify-content: space-around; padding: 15px 5px; border-top: 1px solid #334155; }
+        .card { background: var(--card); border-radius: 16px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155; }
+        .aviator-screen { background: radial-gradient(circle, #1e293b, #000); height: 150px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 40px; color: var(--danger); font-family: 'Orbitron'; margin-bottom: 10px; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #0f172a; display: flex; justify-content: space-around; padding: 15px 5px; border-top: 1px solid #334155; z-index: 1000; }
         .nav-item { color: #64748b; font-size: 12px; font-weight: bold; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
     </style>
@@ -38,7 +40,15 @@
             <div class="wallet">₹ <span id="bal">...</span></div>
         </header>
         <div class="app-content">
-            <div id="p-home" class="page active"><h3>Welcome, <span id="user-display"></span></h3><p>Games and betting coming soon...</p></div>
+            <div id="p-home" class="page active">
+                <div class="card"><h3>Welcome, <span id="user-display"></span></h3><p>Choose a game from bottom menu!</p></div>
+                <div class="card"><h4>IND vs AUS</h4><button class="auth-btn" style="background:var(--primary)" onclick="alert('Bet Placed!')">Bet on IND (1.85)</button></div>
+            </div>
+            <div id="p-game" class="page">
+                <h3>🚀 Aviator</h3>
+                <div class="aviator-screen" id="av-mult">1.00x</div>
+                <button class="auth-btn" style="background:var(--success)" onclick="alert('Game Started!')">START BET</button>
+            </div>
             <div id="p-bank" class="page">
                 <h3>Withdraw</h3>
                 <input type="text" id="upi" class="auth-input" placeholder="UPI ID">
@@ -47,7 +57,8 @@
             </div>
         </div>
         <div class="bottom-nav">
-            <div class="nav-item active" onclick="nav('home', this)">Home</div>
+            <div class="nav-item active" onclick="nav('home', this)">Sports</div>
+            <div class="nav-item" onclick="nav('game', this)">Games</div>
             <div class="nav-item" onclick="nav('bank', this)">Bank</div>
         </div>
     </div>
@@ -55,26 +66,18 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <script>
-        const conf = { 
-            apiKey: "AIzaSyDdURW00a3AheG1SZI67Itu_LZ9ddPBWG0", 
-            databaseURL: "https://xbat-5c582-default-rtdb.firebaseio.com",
-            projectId: "xbat-5c582" 
-        };
-        firebase.initializeApp(conf);
-        const db = firebase.database();
+        const conf = { apiKey: "AIzaSyDdURW00a3AheG1SZI67Itu_LZ9ddPBWG0", databaseURL: "https://xbat-5c582-default-rtdb.firebaseio.com", projectId: "xbat-5c582" };
+        firebase.initializeApp(conf); const db = firebase.database();
         let curUser = ""; let curBal = 0;
 
         function doAuth(type) {
             let u = document.getElementById('u').value.trim();
             let p = document.getElementById('p').value.trim();
-            if(!u || !p) return alert("Fill all!");
             db.ref('users/' + u).once('value', (s) => {
                 if(type === 'login') {
-                    if(s.exists() && s.val().password === p) { curUser = u; curBal = s.val().balance; start(); }
-                    else alert("Wrong ID/PW");
+                    if(s.exists() && s.val().password === p) { curUser = u; start(); } else alert("Wrong!");
                 } else {
-                    if(s.exists()) alert("User Exists!");
-                    else db.ref('users/' + u).set({ password: p, balance: 10000 }).then(() => { curUser = u; curBal = 10000; start(); });
+                    if(s.exists()) alert("Exists!"); else db.ref('users/' + u).set({ password: p, balance: 10000 }).then(() => { curUser = u; start(); });
                 }
             });
         }
@@ -82,23 +85,20 @@
             document.getElementById('auth-screen').style.display = "none";
             document.getElementById('main-app').style.display = "block";
             document.getElementById('user-display').innerText = curUser;
-            updateUI();
-            db.ref('users/' + curUser + '/balance').on('value', (s) => { if(s.exists()){ curBal = s.val(); updateUI(); }});
+            db.ref('users/' + curUser + '/balance').on('value', (s) => { curBal = s.val(); document.getElementById('bal').innerText = curBal; });
         }
-        function updateUI() { document.getElementById('bal').innerText = curBal; }
         function nav(p, el) {
             document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(ni => ni.classList.remove('active'));
             document.getElementById('p-' + p).classList.add('active'); el.classList.add('active');
         }
         function withdraw() {
-            let upi = document.getElementById('upi').value;
             let a = parseInt(document.getElementById('amt').value);
             if(a >= 500 && a <= curBal) {
                 db.ref('users/' + curUser).update({ balance: curBal - a });
-                db.ref('withdrawals').push({ user: curUser, upi: upi, amount: a, time: new Date().toLocaleString() });
-                alert("Request Sent!");
-            } else alert("Invalid Amount/Balance!");
+                db.ref('withdrawals').push({ user: curUser, upi: document.getElementById('upi').value, amount: a });
+                alert("Success!");
+            } else alert("Low Balance!");
         }
     </script>
 </body>
