@@ -26,13 +26,22 @@
         .match-card { background: var(--card); border-radius: 16px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155; }
         .odds-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .odd-btn { background: #0f172a; border: 1px solid #334155; padding: 10px 5px; border-radius: 10px; text-align: center; cursor: pointer; }
+        .aviator-screen { background: radial-gradient(circle, #1e293b, #000); height: 200px; border-radius: 16px; display: flex; justify-content: center; align-items: center; position: relative; border: 2px solid var(--danger); margin-bottom: 15px; overflow: hidden; }
+        .av-mult { font-family: 'Orbitron'; font-size: 50px; color: var(--danger); font-weight: bold; z-index: 10; }
+        .rocket { position: absolute; font-size: 40px; bottom: 10%; left: 10%; display: none; }
+        .rocket.flying { display: block; animation: shake 0.5s infinite; }
+        .slots-machine { background: linear-gradient(#b91c1c, #7f1d1d); padding: 15px; border-radius: 16px; border: 3px solid var(--accent); text-align: center; }
+        .slots-grid { display: flex; justify-content: space-between; background: #000; padding: 15px; border-radius: 10px; margin: 15px 0; border: 2px solid #475569; }
+        .slot-box { width: 30%; height: 70px; background: #fff; border-radius: 8px; font-size: 40px; display: flex; align-items: center; justify-content: center; }
         .action-btn { width: 100%; padding: 15px; font-size: 20px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; text-transform: uppercase; color: #000; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #0f172a; display: flex; justify-content: space-around; padding: 10px 5px 20px 5px; border-top: 1px solid #334155; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #0f172a; display: flex; justify-content: space-around; padding: 10px 5px 20px 5px; border-top: 1px solid #334155; z-index: 1000; }
         .nav-item { text-align: center; color: #64748b; font-size: 12px; font-weight: bold; width: 25%; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
+        @keyframes shake { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-1px, -1px); } 100% { transform: translate(1px, -1px); } }
     </style>
 </head>
 <body>
+
     <div id="auth-screen">
         <div class="auth-box">
             <div class="auth-logo">10X<span>BAT</span></div>
@@ -42,6 +51,7 @@
             <button class="auth-btn btn-signup" onclick="signupUser()">CREATE ACCOUNT</button>
         </div>
     </div>
+
     <div id="main-app" style="display:none; flex-direction:column; height:100vh;">
         <header>
             <div class="logo">10X<span>BAT</span></div>
@@ -51,6 +61,7 @@
                 <button onclick="logoutUser()" style="background:var(--danger); color:#fff; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">Exit</button>
             </div>
         </header>
+
         <div class="app-content">
             <div id="page-sports" class="page active">
                 <h3 style="color:#94a3b8;">🏏 Trending Matches</h3>
@@ -62,6 +73,27 @@
                     </div>
                 </div>
             </div>
+
+            <div id="page-aviator" class="page">
+                <h3 style="color:#94a3b8;">🚀 Aviator Crash</h3>
+                <div class="aviator-screen">
+                    <div id="av-rocket" class="rocket">🚀</div>
+                    <div id="av-mult" class="av-mult" style="color:var(--success)">1.00x</div>
+                </div>
+                <div style="padding:10px;"><input type="number" id="av-bet" value="100" class="auth-input"></div>
+                <button id="av-btn-bet" class="action-btn" style="background:var(--success);" onclick="startAviator()">BET</button>
+                <button id="av-btn-cashout" class="action-btn" style="background:var(--accent); display:none;" onclick="cashOutAviator()">CASH OUT</button>
+            </div>
+
+            <div id="page-slots" class="page">
+                <h3 style="color:#94a3b8;">🎰 Lucky Slots</h3>
+                <div class="slots-machine">
+                    <div class="slots-grid"><div class="slot-box" id="s1">💎</div><div class="slot-box" id="s2">💎</div><div class="slot-box" id="s3">💎</div></div>
+                    <div style="padding:10px;"><input type="number" id="slot-bet" value="50" class="auth-input"></div>
+                    <button class="action-btn" id="slot-btn" style="background:var(--accent);" onclick="spinSlots()">SPIN</button>
+                </div>
+            </div>
+
             <div id="page-withdraw" class="page">
                 <h3 style="color:#94a3b8;">💸 Withdraw Funds</h3>
                 <div style="background: var(--card); padding: 20px; border-radius: 16px;">
@@ -71,8 +103,11 @@
                 </div>
             </div>
         </div>
+
         <div class="bottom-nav">
             <div class="nav-item active" onclick="navTo('sports', this)">Sports</div>
+            <div class="nav-item" onclick="navTo('aviator', this)">Aviator</div>
+            <div class="nav-item" onclick="navTo('slots', this)">Slots</div>
             <div class="nav-item" onclick="navTo('withdraw', this)">Bank</div>
         </div>
     </div>
@@ -129,16 +164,6 @@
             if(userId) db.ref('users/' + userId).update({ balance: globalBalance });
         }
 
-        function requestWithdrawal() {
-            let upi = document.getElementById('withdraw-upi').value;
-            let amt = parseInt(document.getElementById('withdraw-amt').value);
-            if(amt >= 500 && amt <= globalBalance) {
-                updateWallet(-amt);
-                db.ref('withdrawals/').push({ user: userId, upi: upi, amount: amt, status: "Pending", time: new Date().toLocaleString() });
-                alert("✅ Withdrawal Request Sent!");
-            } else alert("❌ Check balance/min amount!");
-        }
-
         function navTo(page, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -146,12 +171,63 @@
             el.classList.add('active');
         }
 
-        function logoutUser() { location.reload(); }
-        function placeSportsBet(team, rate) {
-            let amt = parseInt(prompt(`Bet on ${team} @ ${rate}\nEnter Amount:`, "500"));
-            if (amt && amt <= globalBalance) { updateWallet(-amt); alert("✅ Bet Placed!"); }
-            else alert("❌ Insufficient Balance!");
+        function requestWithdrawal() {
+            let upi = document.getElementById('withdraw-upi').value;
+            let amt = parseInt(document.getElementById('withdraw-amt').value);
+            if(amt >= 500 && amt <= globalBalance) {
+                updateWallet(-amt);
+                db.ref('withdrawals/').push({ user: userId, upi: upi, amount: amt, status: "Pending", time: new Date().toLocaleString() });
+                alert("✅ Request Sent!");
+            } else alert("❌ Error!");
         }
+
+        // --- Games Logic ---
+        let avInterval; let avMult = 1.00; let isAvPlaying = false; let avBetAmt = 0;
+        function startAviator() {
+            avBetAmt = parseInt(document.getElementById('av-bet').value);
+            if (avBetAmt > globalBalance || avBetAmt <= 0) return alert("Low Balance!");
+            updateWallet(-avBetAmt); isAvPlaying = true; avMult = 1.00;
+            let crashPoint = (Math.random() * 3 + 1.10).toFixed(2);
+            document.getElementById('av-btn-bet').style.display = "none";
+            document.getElementById('av-btn-cashout').style.display = "block";
+            let rocket = document.getElementById('av-rocket'); rocket.classList.add('flying');
+            avInterval = setInterval(() => {
+                avMult += 0.01;
+                document.getElementById('av-mult').innerText = avMult.toFixed(2) + "x";
+                if (avMult >= crashPoint) { clearInterval(avInterval); crashAviator(); }
+            }, 100);
+        }
+        function cashOutAviator() {
+            if(!isAvPlaying) return; clearInterval(avInterval); isAvPlaying = false;
+            updateWallet(Math.floor(avBetAmt * avMult));
+            document.getElementById('av-rocket').classList.remove('flying');
+            document.getElementById('av-btn-cashout').style.display = "none"; document.getElementById('av-btn-bet').style.display = "block";
+        }
+        function crashAviator() {
+            isAvPlaying = false; document.getElementById('av-rocket').classList.remove('flying');
+            alert("Crashed at " + avMult.toFixed(2) + "x");
+            document.getElementById('av-btn-cashout').style.display = "none"; document.getElementById('av-btn-bet').style.display = "block";
+        }
+
+        const symbols = ['💎', '🍒', '🔔', '🍉'];
+        function spinSlots() {
+            let bet = parseInt(document.getElementById('slot-bet').value);
+            if (bet > globalBalance || bet <= 0) return alert("Low Balance!");
+            updateWallet(-bet);
+            let sInt = setInterval(() => {
+                document.getElementById('s1').innerText = symbols[Math.floor(Math.random()*4)];
+                document.getElementById('s2').innerText = symbols[Math.floor(Math.random()*4)];
+                document.getElementById('s3').innerText = symbols[Math.floor(Math.random()*4)];
+            }, 100);
+            setTimeout(() => { clearInterval(sInt); checkSlots(bet); }, 1500);
+        }
+        function checkSlots(bet) {
+            let s1 = document.getElementById('s1').innerText; let s2 = document.getElementById('s2').innerText; let s3 = document.getElementById('s3').innerText;
+            if(s1 === s2 && s2 === s3) { updateWallet(bet * 10); alert("JACKPOT!"); }
+            else if(s1 === s2 || s2 === s3 || s1 === s3) { updateWallet(bet * 2); alert("Win!"); }
+        }
+        function logoutUser() { location.reload(); }
+        function placeSportsBet(t, r) { let a = parseInt(prompt("Amount:")); if(a<=globalBalance) updateWallet(-a); }
     </script>
 </body>
 </html>
