@@ -3,231 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>10X-BAT SUPER APP</title>
+    <title>10X-BAT OFFICIAL</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #0f172a; --card: #1e293b; --primary: #38bdf8; --success: #10b981; --danger: #ef4444; --accent: #f59e0b; --text: #f8fafc; }
-        body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; user-select: none; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
         .auth-box { background: var(--card); padding: 30px; border-radius: 16px; width: 100%; max-width: 400px; border: 1px solid #334155; text-align: center; }
-        .auth-logo { font-size: 32px; font-weight: bold; font-family: 'Orbitron'; color: var(--text); margin-bottom: 20px; }
-        .auth-logo span { color: var(--primary); }
-        .auth-input { width: 100%; background: #000; border: 1px solid #334155; color: #fff; padding: 15px; border-radius: 8px; font-size: 16px; margin-bottom: 15px; box-sizing: border-box; }
-        .auth-btn { width: 100%; padding: 15px; font-size: 18px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; margin-bottom: 10px; }
-        .btn-login { background: var(--primary); color: #000; }
-        .btn-signup { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .auth-input { width: 100%; background: #000; border: 1px solid #334155; color: #fff; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; }
+        .auth-btn { width: 100%; padding: 15px; font-size: 18px; font-weight: bold; border-radius: 8px; cursor: pointer; border: none; }
         header { background: rgba(15, 23, 42, 0.95); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
-        .logo { font-size: 22px; font-weight: bold; font-family: 'Orbitron'; color: var(--text); }
-        .logo span { color: var(--primary); }
-        .wallet { background: #000; border: 1px solid var(--success); color: var(--success); padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 16px; }
+        .wallet { background: #000; border: 1px solid var(--success); color: var(--success); padding: 5px 15px; border-radius: 20px; font-weight: bold; }
         .app-content { flex: 1; overflow-y: auto; padding-bottom: 80px; }
         .page { display: none; padding: 15px; }
         .page.active { display: block; }
-        .match-card { background: var(--card); border-radius: 16px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155; }
-        .odds-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .odd-btn { background: #0f172a; border: 1px solid #334155; padding: 10px 5px; border-radius: 10px; text-align: center; cursor: pointer; }
-        .aviator-screen { background: radial-gradient(circle, #1e293b, #000); height: 200px; border-radius: 16px; display: flex; justify-content: center; align-items: center; position: relative; border: 2px solid var(--danger); margin-bottom: 15px; overflow: hidden; }
-        .av-mult { font-family: 'Orbitron'; font-size: 50px; color: var(--danger); font-weight: bold; z-index: 10; }
-        .rocket { position: absolute; font-size: 40px; bottom: 10%; left: 10%; display: none; }
-        .rocket.flying { display: block; animation: shake 0.5s infinite; }
-        .slots-machine { background: linear-gradient(#b91c1c, #7f1d1d); padding: 15px; border-radius: 16px; border: 3px solid var(--accent); text-align: center; }
-        .slots-grid { display: flex; justify-content: space-between; background: #000; padding: 15px; border-radius: 10px; margin: 15px 0; border: 2px solid #475569; }
-        .slot-box { width: 30%; height: 70px; background: #fff; border-radius: 8px; font-size: 40px; display: flex; align-items: center; justify-content: center; }
-        .action-btn { width: 100%; padding: 15px; font-size: 20px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; text-transform: uppercase; color: #000; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #0f172a; display: flex; justify-content: space-around; padding: 10px 5px 20px 5px; border-top: 1px solid #334155; z-index: 1000; }
-        .nav-item { text-align: center; color: #64748b; font-size: 12px; font-weight: bold; width: 25%; cursor: pointer; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #0f172a; display: flex; justify-content: space-around; padding: 15px 5px; border-top: 1px solid #334155; }
+        .nav-item { color: #64748b; font-size: 12px; font-weight: bold; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
-        @keyframes shake { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-1px, -1px); } 100% { transform: translate(1px, -1px); } }
     </style>
 </head>
 <body>
-
     <div id="auth-screen">
         <div class="auth-box">
-            <div class="auth-logo">10X<span>BAT</span></div>
-            <input type="text" id="auth-username" class="auth-input" placeholder="Username">
-            <input type="password" id="auth-password" class="auth-input" placeholder="Password">
-            <button class="auth-btn btn-login" onclick="loginUser()">LOGIN</button>
-            <button class="auth-btn btn-signup" onclick="signupUser()">CREATE ACCOUNT</button>
+            <h1 style="font-family:'Orbitron'">10X<span>BAT</span></h1>
+            <input type="text" id="u" class="auth-input" placeholder="Username">
+            <input type="password" id="p" class="auth-input" placeholder="Password">
+            <button class="auth-btn" style="background:var(--primary)" onclick="doAuth('login')">LOGIN</button>
+            <button class="auth-btn" style="background:transparent; color:var(--primary); margin-top:10px;" onclick="doAuth('signup')">CREATE ACCOUNT</button>
         </div>
     </div>
-
-    <div id="main-app" style="display:none; flex-direction:column; height:100vh;">
+    <div id="main-app" style="display:none;">
         <header>
-            <div class="logo">10X<span>BAT</span></div>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <div id="display-username" style="color: #64748b; font-size: 14px;">User</div>
-                <div class="wallet">₹ <span id="main-balance">...</span></div>
-                <button onclick="logoutUser()" style="background:var(--danger); color:#fff; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">Exit</button>
-            </div>
+            <div style="font-family:'Orbitron'">10X<span>BAT</span></div>
+            <div class="wallet">₹ <span id="bal">...</span></div>
         </header>
-
         <div class="app-content">
-            <div id="page-sports" class="page active">
-                <h3 style="color:#94a3b8;">🏏 Trending Matches</h3>
-                <div class="match-card">
-                    <div style="font-size:20px; font-weight:bold; margin-bottom:15px;">🇮🇳 IND vs AUS 🇦🇺</div>
-                    <div class="odds-row">
-                        <div class="odd-btn" onclick="placeSportsBet('IND', 1.85)"><span>W1</span><b>1.85</b></div>
-                        <div class="odd-btn" onclick="placeSportsBet('AUS', 2.15)"><span>W2</span><b>2.15</b></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="page-aviator" class="page">
-                <h3 style="color:#94a3b8;">🚀 Aviator Crash</h3>
-                <div class="aviator-screen">
-                    <div id="av-rocket" class="rocket">🚀</div>
-                    <div id="av-mult" class="av-mult" style="color:var(--success)">1.00x</div>
-                </div>
-                <div style="padding:10px;"><input type="number" id="av-bet" value="100" class="auth-input"></div>
-                <button id="av-btn-bet" class="action-btn" style="background:var(--success);" onclick="startAviator()">BET</button>
-                <button id="av-btn-cashout" class="action-btn" style="background:var(--accent); display:none;" onclick="cashOutAviator()">CASH OUT</button>
-            </div>
-
-            <div id="page-slots" class="page">
-                <h3 style="color:#94a3b8;">🎰 Lucky Slots</h3>
-                <div class="slots-machine">
-                    <div class="slots-grid"><div class="slot-box" id="s1">💎</div><div class="slot-box" id="s2">💎</div><div class="slot-box" id="s3">💎</div></div>
-                    <div style="padding:10px;"><input type="number" id="slot-bet" value="50" class="auth-input"></div>
-                    <button class="action-btn" id="slot-btn" style="background:var(--accent);" onclick="spinSlots()">SPIN</button>
-                </div>
-            </div>
-
-            <div id="page-withdraw" class="page">
-                <h3 style="color:#94a3b8;">💸 Withdraw Funds</h3>
-                <div style="background: var(--card); padding: 20px; border-radius: 16px;">
-                    <input type="text" id="withdraw-upi" class="auth-input" placeholder="Enter UPI ID">
-                    <input type="number" id="withdraw-amt" class="auth-input" placeholder="Enter Amount">
-                    <button class="action-btn" style="background:var(--primary);" onclick="requestWithdrawal()">WITHDRAW NOW</button>
-                </div>
+            <div id="p-home" class="page active"><h3>Welcome, <span id="user-display"></span></h3><p>Games and betting coming soon...</p></div>
+            <div id="p-bank" class="page">
+                <h3>Withdraw</h3>
+                <input type="text" id="upi" class="auth-input" placeholder="UPI ID">
+                <input type="number" id="amt" class="auth-input" placeholder="Amount">
+                <button class="auth-btn" style="background:var(--success)" onclick="withdraw()">WITHDRAW NOW</button>
             </div>
         </div>
-
         <div class="bottom-nav">
-            <div class="nav-item active" onclick="navTo('sports', this)">Sports</div>
-            <div class="nav-item" onclick="navTo('aviator', this)">Aviator</div>
-            <div class="nav-item" onclick="navTo('slots', this)">Slots</div>
-            <div class="nav-item" onclick="navTo('withdraw', this)">Bank</div>
+            <div class="nav-item active" onclick="nav('home', this)">Home</div>
+            <div class="nav-item" onclick="nav('bank', this)">Bank</div>
         </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
     <script>
-        const firebaseConfig = {
-          apiKey: "AIzaSyDdURW00a3AheG1SZI67Itu_LZ9ddPBWG0",
-          authDomain: "xbat-5c582.firebaseapp.com",
-          databaseURL: "https://xbat-5c582-default-rtdb.firebaseio.com",
-          projectId: "xbat-5c582"
+        const conf = { 
+            apiKey: "AIzaSyDdURW00a3AheG1SZI67Itu_LZ9ddPBWG0", 
+            databaseURL: "https://xbat-5c582-default-rtdb.firebaseio.com",
+            projectId: "xbat-5c582" 
         };
-        firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(conf);
         const db = firebase.database();
+        let curUser = ""; let curBal = 0;
 
-        let globalBalance = 0; let userId = "";
-
-        function loginUser() {
-            let u = document.getElementById('auth-username').value.trim();
-            let p = document.getElementById('auth-password').value.trim();
+        function doAuth(type) {
+            let u = document.getElementById('u').value.trim();
+            let p = document.getElementById('p').value.trim();
+            if(!u || !p) return alert("Fill all!");
             db.ref('users/' + u).once('value', (s) => {
-                if (s.exists() && s.val().password === p) {
-                    userId = u; globalBalance = s.val().balance; enterApp();
-                } else alert("❌ Wrong details!");
-            });
-        }
-
-        function signupUser() {
-            let u = document.getElementById('auth-username').value.trim();
-            let p = document.getElementById('auth-password').value.trim();
-            db.ref('users/' + u).once('value', (s) => {
-                if (s.exists()) alert("❌ Username exists!");
-                else {
-                    db.ref('users/' + u).set({ password: p, balance: 10000 }).then(() => {
-                        userId = u; globalBalance = 10000; enterApp();
-                        alert("🎉 Welcome! ₹10,000 Credited!");
-                    });
+                if(type === 'login') {
+                    if(s.exists() && s.val().password === p) { curUser = u; curBal = s.val().balance; start(); }
+                    else alert("Wrong ID/PW");
+                } else {
+                    if(s.exists()) alert("User Exists!");
+                    else db.ref('users/' + u).set({ password: p, balance: 10000 }).then(() => { curUser = u; curBal = 10000; start(); });
                 }
             });
         }
-
-        function enterApp() {
+        function start() {
             document.getElementById('auth-screen').style.display = "none";
-            document.getElementById('main-app').style.display = "flex";
-            document.getElementById('display-username').innerText = userId;
-            updateWallet(0);
+            document.getElementById('main-app').style.display = "block";
+            document.getElementById('user-display').innerText = curUser;
+            updateUI();
+            db.ref('users/' + curUser + '/balance').on('value', (s) => { if(s.exists()){ curBal = s.val(); updateUI(); }});
         }
-
-        function updateWallet(amt) {
-            globalBalance += amt;
-            document.getElementById('main-balance').innerText = globalBalance.toLocaleString();
-            if(userId) db.ref('users/' + userId).update({ balance: globalBalance });
+        function updateUI() { document.getElementById('bal').innerText = curBal; }
+        function nav(p, el) {
+            document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(ni => ni.classList.remove('active'));
+            document.getElementById('p-' + p).classList.add('active'); el.classList.add('active');
         }
-
-        function navTo(page, el) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById('page-' + page).classList.add('active');
-            el.classList.add('active');
+        function withdraw() {
+            let upi = document.getElementById('upi').value;
+            let a = parseInt(document.getElementById('amt').value);
+            if(a >= 500 && a <= curBal) {
+                db.ref('users/' + curUser).update({ balance: curBal - a });
+                db.ref('withdrawals').push({ user: curUser, upi: upi, amount: a, time: new Date().toLocaleString() });
+                alert("Request Sent!");
+            } else alert("Invalid Amount/Balance!");
         }
-
-        function requestWithdrawal() {
-            let upi = document.getElementById('withdraw-upi').value;
-            let amt = parseInt(document.getElementById('withdraw-amt').value);
-            if(amt >= 500 && amt <= globalBalance) {
-                updateWallet(-amt);
-                db.ref('withdrawals/').push({ user: userId, upi: upi, amount: amt, status: "Pending", time: new Date().toLocaleString() });
-                alert("✅ Request Sent!");
-            } else alert("❌ Error!");
-        }
-
-        // --- Games Logic ---
-        let avInterval; let avMult = 1.00; let isAvPlaying = false; let avBetAmt = 0;
-        function startAviator() {
-            avBetAmt = parseInt(document.getElementById('av-bet').value);
-            if (avBetAmt > globalBalance || avBetAmt <= 0) return alert("Low Balance!");
-            updateWallet(-avBetAmt); isAvPlaying = true; avMult = 1.00;
-            let crashPoint = (Math.random() * 3 + 1.10).toFixed(2);
-            document.getElementById('av-btn-bet').style.display = "none";
-            document.getElementById('av-btn-cashout').style.display = "block";
-            let rocket = document.getElementById('av-rocket'); rocket.classList.add('flying');
-            avInterval = setInterval(() => {
-                avMult += 0.01;
-                document.getElementById('av-mult').innerText = avMult.toFixed(2) + "x";
-                if (avMult >= crashPoint) { clearInterval(avInterval); crashAviator(); }
-            }, 100);
-        }
-        function cashOutAviator() {
-            if(!isAvPlaying) return; clearInterval(avInterval); isAvPlaying = false;
-            updateWallet(Math.floor(avBetAmt * avMult));
-            document.getElementById('av-rocket').classList.remove('flying');
-            document.getElementById('av-btn-cashout').style.display = "none"; document.getElementById('av-btn-bet').style.display = "block";
-        }
-        function crashAviator() {
-            isAvPlaying = false; document.getElementById('av-rocket').classList.remove('flying');
-            alert("Crashed at " + avMult.toFixed(2) + "x");
-            document.getElementById('av-btn-cashout').style.display = "none"; document.getElementById('av-btn-bet').style.display = "block";
-        }
-
-        const symbols = ['💎', '🍒', '🔔', '🍉'];
-        function spinSlots() {
-            let bet = parseInt(document.getElementById('slot-bet').value);
-            if (bet > globalBalance || bet <= 0) return alert("Low Balance!");
-            updateWallet(-bet);
-            let sInt = setInterval(() => {
-                document.getElementById('s1').innerText = symbols[Math.floor(Math.random()*4)];
-                document.getElementById('s2').innerText = symbols[Math.floor(Math.random()*4)];
-                document.getElementById('s3').innerText = symbols[Math.floor(Math.random()*4)];
-            }, 100);
-            setTimeout(() => { clearInterval(sInt); checkSlots(bet); }, 1500);
-        }
-        function checkSlots(bet) {
-            let s1 = document.getElementById('s1').innerText; let s2 = document.getElementById('s2').innerText; let s3 = document.getElementById('s3').innerText;
-            if(s1 === s2 && s2 === s3) { updateWallet(bet * 10); alert("JACKPOT!"); }
-            else if(s1 === s2 || s2 === s3 || s1 === s3) { updateWallet(bet * 2); alert("Win!"); }
-        }
-        function logoutUser() { location.reload(); }
-        function placeSportsBet(t, r) { let a = parseInt(prompt("Amount:")); if(a<=globalBalance) updateWallet(-a); }
     </script>
 </body>
 </html>
