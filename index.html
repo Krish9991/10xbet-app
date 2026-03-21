@@ -3,27 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>10X-BAT OFFICIAL MASTER</title>
+    <title>10X-BAT OFFICIAL</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #020617; --card: #1e293b; --primary: #38bdf8; --success: #10b981; --danger: #ef4444; --accent: #f59e0b; --text: #f8fafc; --nav: #0f172a; }
         body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; user-select: none; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        
+        /* Auth Screen */
+        #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
+        .auth-box { background: var(--card); padding: 30px; border-radius: 16px; width: 100%; max-width: 400px; border: 1px solid #334155; text-align: center; }
+        .auth-input { width: 100%; background: #000; border: 1px solid #334155; color: #fff; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; }
+
         header { background: var(--nav); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1e293b; }
         .logo { font-family: 'Orbitron'; font-size: 22px; color: var(--text); }
         .logo span { color: var(--primary); }
         .wallet { background: #000; border: 1px solid var(--success); padding: 5px 15px; border-radius: 20px; font-weight: bold; color: var(--success); }
+        
         .app-content { flex: 1; overflow-y: auto; padding-bottom: 80px; }
         .page { display: none; padding: 15px; }
         .page.active { display: block; }
+        
         .category-bar { display: flex; gap: 10px; overflow-x: auto; padding: 10px; background: #000; }
         .cat-btn { background: var(--card); border: 1px solid #334155; padding: 8px 15px; border-radius: 8px; white-space: nowrap; color: #94a3b8; font-size: 14px; cursor: pointer; }
         .cat-btn.active { background: var(--primary); color: #000; }
+
         .game-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .game-card { background: var(--card); border-radius: 12px; border: 1px solid #334155; text-align: center; padding: 15px; }
         .play-btn { background: var(--primary); color: #000; border: none; width: 100%; padding: 10px; border-radius: 5px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--nav); display: flex; justify-content: space-around; padding: 10px 0; border-top: 2px solid #1e293b; }
         .nav-item { color: #64748b; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; }
         .nav-item.active { color: var(--primary); }
+
         .admin-card { background: #0f172a; border-left: 4px solid var(--primary); padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px; }
         .admin-btn { background: var(--primary); color: #000; border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
         .secret-link { display: none; color: #1e293b; text-align: center; margin-top: 20px; font-size: 12px; cursor: pointer; }
@@ -31,114 +42,112 @@
 </head>
 <body>
 
-    <header>
-        <div class="logo">10X<span>BAT</span></div>
-        <div class="wallet">₹ <span id="user-bal">...</span></div>
-    </header>
-
-    <div class="category-bar">
-        <div class="cat-btn active" onclick="tabNav('casino', this)">🎰 Casino</div>
-        <div class="cat-btn" onclick="tabNav('slots', this)">🍒 Slots</div>
-        <div class="cat-btn" onclick="tabNav('sports', this)">🏏 Sports</div>
+    <div id="auth-screen">
+        <div class="auth-box">
+            <h1 style="font-family:'Orbitron'">10X<span>BAT</span></h1>
+            <input type="text" id="u-login" class="auth-input" placeholder="Username">
+            <input type="password" id="p-login" class="auth-input" placeholder="Password">
+            <button class="play-btn" onclick="doAuth('login')">LOGIN</button>
+            <button class="play-btn" style="background:transparent; color:var(--primary); border:1px solid var(--primary); margin-top:10px;" onclick="doAuth('signup')">CREATE ACCOUNT</button>
+        </div>
     </div>
 
-    <div class="app-content">
-        <div id="p-casino" class="page active">
-            <div class="game-grid">
-                <div class="game-card"><div>🎲</div><h4>Roulette</h4><button class="play-btn">Play</button></div>
-                <div class="game-card"><div>🐉</div><h4>Dragon Tiger</h4><button class="play-btn">Play</button></div>
-            </div>
+    <div id="main-app" style="display:none;">
+        <header>
+            <div class="logo">10X<span>BAT</span></div>
+            <div class="wallet">₹ <span id="user-bal">...</span></div>
+        </header>
+
+        <div class="category-bar">
+            <div class="cat-btn active" onclick="tabNav('casino', this)">🎰 Casino</div>
+            <div class="cat-btn" onclick="tabNav('slots', this)">🍒 Slots</div>
+            <div class="cat-btn" onclick="tabNav('sports', this)">🏏 Sports</div>
         </div>
 
-        <div id="p-slots" class="page">
-            <div class="game-grid" id="slots-area"></div>
-        </div>
-
-        <div id="p-sports" class="page">
-            <div class="game-card" style="text-align:left;">
-                <p>🏏 <b>Live: IND vs AUS</b></p>
-                <div style="display:flex; gap:10px;">
-                    <button class="play-btn" style="background:var(--success)">IND (1.9)</button>
-                    <button class="play-btn" style="background:var(--danger)">AUS (2.1)</button>
+        <div class="app-content">
+            <div id="p-casino" class="page active">
+                <div class="game-grid">
+                    <div class="game-card"><div>🎲</div><h4>Roulette</h4><button class="play-btn">Play</button></div>
+                    <div class="game-card"><div>🐉</div><h4>Dragon Tiger</h4><button class="play-btn">Play</button></div>
                 </div>
             </div>
-        </div>
 
-        <div id="p-bank" class="page">
-            <h3>Withdraw Funds</h3>
-            <div class="game-card">
-                <input type="text" id="upi" placeholder="UPI ID" style="width:100%; padding:12px; margin-bottom:10px; background:#000; color:#fff; border:1px solid #334155; border-radius:8px;">
-                <input type="number" id="amt" placeholder="Amount (Min ₹500)" style="width:100%; padding:12px; margin-bottom:15px; background:#000; color:#fff; border:1px solid #334155; border-radius:8px;">
-                <button class="play-btn" onclick="askWithdraw()" style="background:var(--success)">SEND WITHDRAWAL REQUEST</button>
+            <div id="p-slots" class="page"><div class="game-grid" id="slots-area"></div></div>
+
+            <div id="p-sports" class="page">
+                <div class="game-card" style="text-align:left;">
+                    <p>🏏 <b>Live: IND vs AUS</b></p>
+                    <div style="display:flex; gap:10px;"><button class="play-btn" style="background:var(--success)">IND (1.9)</button><button class="play-btn" style="background:var(--danger)">AUS (2.1)</button></div>
+                </div>
             </div>
-            <div id="admin-trigger" class="secret-link" onclick="openMaster()">Admin Control Panel</div>
+
+            <div id="p-bank" class="page">
+                <h3>Withdraw</h3>
+                <div class="game-card">
+                    <input type="text" id="upi" placeholder="UPI ID" style="width:100%; padding:12px; margin-bottom:10px; background:#000; color:#fff; border:1px solid #334155; border-radius:8px;">
+                    <input type="number" id="amt" placeholder="Amount" style="width:100%; padding:12px; margin-bottom:15px; background:#000; color:#fff; border:1px solid #334155; border-radius:8px;">
+                    <button class="play-btn" onclick="askWithdraw()" style="background:var(--success)">WITHDRAW NOW</button>
+                </div>
+                <div id="admin-trigger" class="secret-link" onclick="openMaster()">Admin Control Panel</div>
+            </div>
+
+            <div id="p-master" class="page" style="background:#000;">
+                <button class="play-btn" style="background:var(--danger); margin-bottom:20px;" onclick="nav('casino', null)">← BACK</button>
+                <h2 style="color:var(--primary)">🛠️ MASTER PANEL</h2>
+                <div id="user-list">Loading...</div>
+                <hr>
+                <h4>Withdrawals</h4>
+                <div id="req-list">No requests.</div>
+            </div>
         </div>
 
-        <div id="p-master" class="page" style="background:#000;">
-            <button class="play-btn" style="background:var(--danger); margin-bottom:20px;" onclick="nav('casino', null)">← BACK TO APP</button>
-            <h2 style="color:var(--primary)">🛠️ MASTER PANEL</h2>
-            <div id="user-list">Loading Users...</div>
-            <hr>
-            <h4>Pending Withdrawals</h4>
-            <div id="req-list">No requests found.</div>
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="nav('casino', this)">Home</div>
+            <div class="nav-item" onclick="nav('slots', this)">Slots</div>
+            <div class="nav-item" onclick="nav('bank', this)">Bank</div>
         </div>
-    </div>
-
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="nav('casino', this)">Home</div>
-        <div class="nav-item" onclick="nav('slots', this)">Slots</div>
-        <div class="nav-item" onclick="nav('bank', this)">Bank</div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <script>
-        const config = { 
-            apiKey: "AIzaSyDdURW00a3AheG1SZI67Itu_LZ9ddPBWG0", 
-            databaseURL: "https://xbat-5c582-default-rtdb.firebaseio.com", 
-            projectId: "xbat-5c582" 
-        };
+        const config = { apiKey: "AIzaSyDdURW00a3AheG1SZI67Itu_LZ9ddPBWG0", databaseURL: "https://xbat-5c582-default-rtdb.firebaseio.com", projectId: "xbat-5c582" };
         firebase.initializeApp(config); const db = firebase.database();
         
-        // --- MASTER CONFIG ---
-        let curU = "Test_master"; // Jo tame login alag naam thi karo to ahiya badaljo
+        let curU = localStorage.getItem('activeUser'); 
         let masterPin = "9991"; 
 
-        function nav(p, el) {
-            document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-            document.getElementById('p-'+p).classList.add('active');
-            if(el) {
-                document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-                el.classList.add('active');
-            }
-            if(p === 'bank' && curU === "Test_master") {
-                document.getElementById('admin-trigger').style.display = 'block';
-            }
-        }
+        function doAuth(type) {
+            let u = document.getElementById('u-login').value.trim();
+            let p = document.getElementById('p-login').value.trim();
+            if(!u || !p) return alert("Fill all!");
 
-        function tabNav(t, el) {
-            document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
-            el.classList.add('active');
-            nav(t, null);
-        }
-
-        function openMaster() {
-            let p = prompt("Enter Secret PIN:");
-            if(p === masterPin) { nav('master', null); } 
-            else { alert("Wrong PIN!"); }
-        }
-
-        // Automatic Balance Management
-        function initApp() {
-            db.ref('users/'+curU).on('value', s => {
-                let data = s.val();
-                if(!data) {
-                    db.ref('users/'+curU).set({balance: 10000, password: "123"});
-                    document.getElementById('user-bal').innerText = "10000";
+            db.ref('users/' + u).once('value', s => {
+                if(type === 'login') {
+                    if(s.exists() && s.val().password === p) { saveAndStart(u); }
+                    else { alert("Wrong ID/PW!"); }
                 } else {
-                    document.getElementById('user-bal').innerText = data.balance;
+                    if(s.exists()) { alert("Exists!"); }
+                    else { db.ref('users/' + u).set({password: p, balance: 10000}).then(() => saveAndStart(u)); }
                 }
             });
+        }
+
+        function saveAndStart(u) {
+            localStorage.setItem('activeUser', u);
+            location.reload();
+        }
+
+        function initApp() {
+            if(!curU) return;
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            
+            db.ref('users/'+curU+'/balance').on('value', s => {
+                document.getElementById('user-bal').innerText = s.val() || 0;
+            });
+
+            if(curU === "Test_master") { document.getElementById('admin-trigger').style.display = 'block'; }
 
             db.ref('users').on('value', s => {
                 let h = ""; s.forEach(c => {
@@ -149,32 +158,42 @@
 
             db.ref('withdrawals').on('value', s => {
                 let h = ""; s.forEach(c => {
-                    h += `<div class="admin-card"><div><b>${c.val().user}</b><br>₹${c.val().amt}<br><small>${c.val().upi}</small></div><button class="admin-btn" style="background:var(--success)" onclick="db.ref('withdrawals/${c.key}').remove()">Done</button></div>`;
+                    h += `<div class="admin-card"><div><b>${c.val().user}</b><br>₹${c.val().amt}</div><button class="admin-btn" style="background:var(--success)" onclick="db.ref('withdrawals/${c.key}').remove()">Done</button></div>`;
                 });
-                document.getElementById('req-list').innerHTML = h || "No pending requests.";
+                document.getElementById('req-list').innerHTML = h || "No requests.";
             });
         }
 
-        function editB(u) { 
-            let n = prompt("New Balance for " + u); 
-            if(n) db.ref('users/'+u).update({balance:parseInt(n)}); 
+        function nav(p, el) {
+            document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+            document.getElementById('p-'+p).classList.add('active');
+            if(el) { document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); }
         }
-        
+
+        function tabNav(t, el) {
+            document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+            el.classList.add('active'); nav(t, null);
+        }
+
+        function openMaster() {
+            if(prompt("Enter PIN:") === masterPin) nav('master', null);
+        }
+
+        function editB(u) { let n = prompt("New Bal for " + u); if(n) db.ref('users/'+u).update({balance:parseInt(n)}); }
+
         function askWithdraw() {
             let a = parseInt(document.getElementById('amt').value);
-            let upi = document.getElementById('upi').value;
             db.ref('users/'+curU+'/balance').once('value', s => {
                 let bal = s.val();
-                if(a >= 500 && a <= bal && upi !== "") {
+                if(a >= 500 && a <= bal) {
                     db.ref('users/'+curU).update({balance: bal - a});
-                    db.ref('withdrawals').push({user:curU, amt:a, upi:upi});
-                    alert("Sent!");
-                } else { alert("Invalid Amount/UPI!"); }
+                    db.ref('withdrawals').push({user:curU, amt:a, upi:document.getElementById('upi').value});
+                    alert("Success!");
+                } else { alert("Error!"); }
             });
         }
 
-        // Slots
-        let sH = ""; for(let i=1;i<=12;i++) sH+=`<div class="game-card"><div>🎰</div><h4>Slot ${i}</h4><button class="play-btn">Play</button></div>`;
+        let sH = ""; for(let i=1;i<=10;i++) sH+=`<div class="game-card"><div>🎰</div><h4>Slot ${i}</h4><button class="play-btn">Play</button></div>`;
         document.getElementById('slots-area').innerHTML = sH;
 
         initApp();
