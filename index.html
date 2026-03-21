@@ -3,140 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>10X-BAT | OFFICIAL EXCHANGE</title>
+    <title>10X-BAT OFFICIAL</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #020617; --card: #111827; --primary: #38bdf8; --success: #10b981; --danger: #ef4444; --accent: #f59e0b; --text: #f8fafc; --nav: #0f172a; }
+        :root { --bg: #020617; --card: #0f172a; --primary: #38bdf8; --success: #10b981; --danger: #ef4444; --accent: #f59e0b; --text: #f8fafc; }
         body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; user-select: none; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* Modern Header */
-        header { background: var(--nav); padding: 12px 15px; border-bottom: 2px solid #1e293b; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
-        .logo { font-family: 'Orbitron'; font-weight: 800; font-size: 20px; color: #fff; }
-        .logo span { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
-        .wallet-badge { background: linear-gradient(90deg, #000, #111); border: 1px solid var(--success); padding: 5px 12px; border-radius: 50px; font-weight: bold; color: var(--success); font-family: 'Orbitron'; font-size: 13px; box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
+        /* Login Screen */
+        #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 25px; box-sizing: border-box; }
+        .auth-card { background: var(--card); padding: 30px; border-radius: 25px; width: 100%; max-width: 350px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
+        .auth-input { width: 100%; background: #000; border: 1px solid #334155; color: var(--accent); padding: 15px; border-radius: 12px; margin-bottom: 15px; font-size: 16px; font-family: 'Orbitron'; box-sizing: border-box; outline: none; }
+        
+        /* App Layout */
+        #main-app { display: none; flex-direction: column; height: 100vh; }
+        header { background: #000; padding: 12px 15px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: center; }
+        .wallet-badge { background: #111; border: 1px solid var(--success); padding: 5px 12px; border-radius: 50px; color: var(--success); font-family: 'Orbitron'; font-size: 13px; }
 
-        .app-content { flex: 1; overflow-y: auto; padding-bottom: 90px; }
-        .page { display: none; padding: 15px; animation: slideIn 0.3s ease-out; }
+        .app-content { flex: 1; overflow-y: auto; padding-bottom: 80px; }
+        .page { display: none; padding: 15px; animation: fadeIn 0.3s ease; }
         .page.active { display: block; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Dashboard Banners */
-        .hero-banner { background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden; }
-        .hero-banner::after { content: ''; position: absolute; top: -50%; right: -20%; width: 150px; height: 150px; background: var(--primary); filter: blur(80px); opacity: 0.2; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .cat-card { background: var(--card); border-radius: 15px; padding: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        
+        /* Aviator */
+        .aviator-box { background: #000; border-radius: 20px; height: 220px; position: relative; overflow: hidden; border: 1px solid #1e293b; }
+        #rocket { position: absolute; bottom: 20px; left: 20px; font-size: 35px; display: none; }
+        #multiplier { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 55px; font-family: 'Orbitron'; }
+        
+        .btn { border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; font-family: 'Rajdhani'; font-size: 18px; width: 100%; text-transform: uppercase; margin-top: 10px; }
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-success { background: var(--success); color: #000; }
 
-        /* Game Categories Grid */
-        .section-label { font-family: 'Orbitron'; font-size: 14px; margin: 20px 0 15px; color: var(--primary); letter-spacing: 1px; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .cat-item { background: var(--card); border-radius: 20px; padding: 25px 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); transition: 0.2s; position: relative; }
-        .cat-item:active { transform: scale(0.95); background: #1e293b; }
-        .cat-icon { font-size: 40px; margin-bottom: 10px; display: block; }
-        .live-tag { position: absolute; top: 10px; right: 10px; background: var(--danger); font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; animation: blink 1s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-
-        /* Sports / Betting List */
-        .match-card { background: #000; border: 1px solid #1e293b; border-radius: 15px; padding: 15px; margin-bottom: 12px; }
-        .odds-row { display: flex; gap: 10px; margin-top: 10px; }
-        .odds-btn { flex: 1; background: #1e293b; border: 1px solid var(--primary); color: var(--primary); padding: 10px; border-radius: 8px; font-weight: bold; font-family: 'Orbitron'; font-size: 13px; }
-
-        /* Profile & Settings */
-        .profile-card { background: var(--card); border-radius: 25px; padding: 30px 20px; text-align: center; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .pfp-main { width: 80px; height: 80px; background: linear-gradient(45deg, var(--primary), #818cf8); border-radius: 20px; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 35px; color: #000; font-weight: 800; box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3); }
-        .list-btn { width: 100%; background: #1e293b; border: none; color: #fff; padding: 15px; border-radius: 12px; margin-bottom: 10px; text-align: left; font-weight: bold; display: flex; justify-content: space-between; }
-
-        /* Bottom Tab Navigation */
-        .bottom-tabs { position: fixed; bottom: 0; left: 0; right: 0; background: var(--nav); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #1e293b; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-        .tab-item { color: #64748b; font-size: 11px; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .bottom-tabs { position: fixed; bottom: 0; left: 0; right: 0; background: #000; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #1e293b; }
+        .tab-item { color: #64748b; font-size: 11px; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .tab-item.active { color: var(--primary); }
-        .tab-icon { font-size: 20px; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">10X<span>BAT</span></div>
-        <div class="wallet-badge">₹ <span id="user-bal">0</span></div>
-    </header>
-
-    <div class="app-content">
-        <div id="p-home" class="page active">
-            <div class="hero-banner">
-                <h2 style="margin:0; font-family:'Orbitron'; font-size:22px; color:var(--primary);">VIP EXCHANGE</h2>
-                <p style="margin:8px 0 0; font-size:13px; color:#94a3b8; letter-spacing:1px;">Trusted by 50K+ Users in India</p>
-                <button style="margin-top:15px; background:var(--success); border:none; padding:8px 15px; border-radius:8px; font-weight:bold; font-size:12px;">DEPOSIT NOW</button>
-            </div>
-
-            <div class="section-label">LIVE CASINO & GAMES</div>
-            <div class="grid-2">
-                <div class="cat-item" onclick="alert('Aviator Code integrated here!')">
-                    <span class="live-tag">LIVE</span>
-                    <span class="cat-icon">🚀</span>
-                    <h3 style="margin:5px 0; font-size:16px;">AVIATOR</h3>
-                </div>
-                <div class="cat-item" onclick="nav('sports')">
-                    <span class="cat-icon">🎲</span>
-                    <h3 style="margin:5px 0; font-size:16px;">ROULETTE</h3>
-                </div>
-            </div>
-
-            <div class="section-label">PREMIUM SLOTS</div>
-            <div class="grid-2">
-                <div class="cat-item"><span class="cat-icon">🎰</span><h3>GATES OF 10X</h3></div>
-                <div class="cat-item"><span class="cat-icon">🍬</span><h3>SUGAR RUSH</h3></div>
-            </div>
-        </div>
-
-        <div id="p-sports" class="page">
-            <div class="section-label">CRICKET EXCHANGE</div>
-            <div class="match-card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                    <span style="font-weight:bold; font-size:15px;">🇮🇳 INDIA vs 🇦🇺 AUSTRALIA</span>
-                    <span style="color:var(--danger); font-weight:bold; font-size:12px;">● LIVE</span>
-                </div>
-                <div class="odds-row">
-                    <button class="odds-btn" style="background:rgba(56, 189, 248, 0.1)">Back: 1.90</button>
-                    <button class="odds-btn" style="border-color:var(--danger); color:var(--danger)">Lay: 1.92</button>
-                </div>
-            </div>
-            
-            <div class="match-card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                    <span style="font-weight:bold; font-size:15px;">🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG vs 🇿🇦 RSA</span>
-                    <span style="color:#64748b; font-size:12px;">Starts at 19:30</span>
-                </div>
-                <div class="odds-row">
-                    <button class="odds-btn">1.85</button>
-                    <button class="odds-btn">2.10</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="p-profile" class="page">
-            <div class="profile-card">
-                <div class="pfp-main" id="u-char">K</div>
-                <h2 id="u-name-top" style="margin:0; font-family:'Orbitron';">User Name</h2>
-                <div style="color:var(--success); font-weight:bold; margin-top:5px; font-size:14px;">Verified Client ✅</div>
-            </div>
-
-            <button class="list-btn" onclick="alert('Account History: No entries')">Account Statement <span>📊</span></button>
-            <button class="list-btn" onclick="alert('Contact Admin for Deposit')">Deposit Funds <span>💰</span></button>
-            <button class="list-btn" onclick="alert('Requesting Withdraw...')">Withdrawal Request <span>🏦</span></button>
-            <button class="list-btn" style="color:var(--danger); margin-top:20px;" onclick="localStorage.clear(); location.reload();">Logout Session <span>🚪</span></button>
-            
-            <div style="text-align:center; margin-top:30px; opacity:0.2; font-size:12px;" onclick="if(prompt('PIN:')==='9991') alert('Master Admin Mode On');">
-                APP VERSION: 4.2.0 (STABLE)
-            </div>
+    <div id="auth-screen">
+        <h1 style="font-family:'Orbitron'; color:var(--primary); margin-bottom:20px;">10X<span>BAT</span></h1>
+        <div class="auth-card">
+            <p style="margin-top:0; color:#64748b;">Create or Login to your ID</p>
+            <input type="text" id="u-login" class="auth-input" placeholder="USERNAME">
+            <input type="password" id="p-login" class="auth-input" placeholder="PASSWORD">
+            <button class="btn btn-primary" onclick="doAuth()">LOGIN / SIGNUP</button>
         </div>
     </div>
 
-    <div class="bottom-tabs">
-        <div class="tab-item active" onclick="nav('home', this)">
-            <span class="tab-icon">🏠</span>Home
+    <div id="main-app">
+        <header>
+            <div style="font-family:'Orbitron'; font-weight:800; font-size:18px;">10X<span>BAT</span></div>
+            <div class="wallet-badge">₹ <span id="user-bal">0</span></div>
+        </header>
+
+        <div class="app-content">
+            <div id="p-home" class="page active">
+                <div style="background: linear-gradient(45deg, #1e293b, #0f172a); padding: 20px; border-radius: 20px; margin-bottom: 20px;">
+                    <h2 style="margin:0; font-family:'Orbitron';">WELCOME</h2>
+                    <p id="display-user" style="color:var(--primary); margin:5px 0 0; font-weight:bold;"></p>
+                </div>
+                <div class="grid-2">
+                    <div class="cat-card" onclick="nav('aviator')">
+                        <div style="font-size:40px;">🚀</div>
+                        <h3>AVIATOR</h3>
+                        <p style="color:var(--success); font-size:10px;">LIVE NOW</p>
+                    </div>
+                    <div class="cat-card" onclick="nav('profile')">
+                        <div style="font-size:40px;">👤</div>
+                        <h3>MY BANK</h3>
+                        <p style="color:#64748b; font-size:10px;">ID DETAILS</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="p-aviator" class="page">
+                <button onclick="nav('home')" style="background:none; border:none; color:var(--primary); font-weight:bold; margin-bottom:10px;">← BACK</button>
+                <div class="aviator-box">
+                    <div id="multiplier" style="top:50%">1.00x</div>
+                    <div id="rocket">🚀</div>
+                </div>
+                <button class="btn btn-success" onclick="alert('Betting starts soon!')">PLACE BET</button>
+            </div>
+
+            <div id="p-profile" class="page">
+                <div class="cat-card">
+                    <div style="font-size:50px; margin-bottom:10px;">👤</div>
+                    <h2 id="u-name-profile">User</h2>
+                    <button class="btn" style="background:var(--danger); color:#fff;" onclick="localStorage.clear(); location.reload();">LOGOUT</button>
+                </div>
+            </div>
         </div>
-        <div class="tab-item" onclick="nav('sports', this)">
-            <span class="tab-icon">🏏</span>Sports
-        </div>
-        <div class="tab-item" onclick="nav('profile', this)">
-            <span class="tab-icon">👤</span>Profile
+
+        <div class="bottom-tabs">
+            <div class="tab-item active" onclick="nav('home', this)"><span>🏠</span>Home</div>
+            <div class="tab-item" onclick="nav('profile', this)"><span>👤</span>Profile</div>
         </div>
     </div>
 
@@ -145,21 +108,51 @@
     <script>
         const config = { apiKey: "AIzaSyDdURW00a3AheG1SZI67Itu_LZ9ddPBWG0", databaseURL: "https://xbat-5c582-default-rtdb.firebaseio.com", projectId: "xbat-5c582" };
         firebase.initializeApp(config); const db = firebase.database();
-        let curU = localStorage.getItem('activeUser') || "Guest_User";
+        let curU = localStorage.getItem('activeUser');
 
-        function init() {
-            document.getElementById('u-name-top').innerText = curU;
-            document.getElementById('u-char').innerText = curU.charAt(0).toUpperCase();
-            db.ref('users/'+curU+'/balance').on('value', s => { 
-                document.getElementById('user-bal').innerText = Math.floor(s.val() || 0); 
+        function doAuth() {
+            let u = document.getElementById('u-login').value.trim();
+            let p = document.getElementById('p-login').value.trim();
+            if(!u || !p) { alert("Please enter Username & Password"); return; }
+            
+            db.ref('users/'+u).once('value', s => {
+                if(s.exists()) {
+                    if(s.val().password === p) {
+                        loginSuccess(u);
+                    } else {
+                        alert("Wrong Password!");
+                    }
+                } else {
+                    // Create New User
+                    db.ref('users/'+u).set({password: p, balance: 500}).then(() => {
+                        loginSuccess(u);
+                    });
+                }
             });
         }
 
+        function loginSuccess(u) {
+            localStorage.setItem('activeUser', u);
+            location.reload();
+        }
+
+        function init() {
+            if(curU) {
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('main-app').style.display = 'flex';
+                document.getElementById('display-user').innerText = "ID: " + curU;
+                document.getElementById('u-name-profile').innerText = curU;
+                db.ref('users/'+curU+'/balance').on('value', s => {
+                    document.getElementById('user-bal').innerText = s.val() || 0;
+                });
+            }
+        }
+
         function nav(p, el) {
-            document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+            document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
             document.getElementById('p-'+p).classList.add('active');
             if(el) {
-                document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
                 el.classList.add('active');
             }
         }
