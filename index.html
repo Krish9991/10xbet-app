@@ -14,17 +14,25 @@
         .auth-box { background: var(--card); padding: 30px; border-radius: 16px; width: 100%; max-width: 400px; border: 1px solid #334155; text-align: center; }
         .auth-input { width: 100%; background: #000; border: 1px solid #334155; color: #fff; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; }
 
-        header { background: var(--nav); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1e293b; }
-        .logo { font-family: 'Orbitron'; font-size: 22px; color: var(--text); }
+        /* Header Sudharo */
+        header { background: var(--nav); padding: 10px 15px; border-bottom: 2px solid #1e293b; }
+        .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .user-info { display: flex; align-items: center; gap: 8px; }
+        .pfp { width: 35px; height: 35px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; font-size: 18px; }
+        .u-det { line-height: 1.2; }
+        .u-name-display { font-weight: bold; font-size: 14px; color: var(--text); }
+        .u-id-display { font-size: 10px; color: #64748b; }
+
+        .logo { font-family: 'Orbitron'; font-size: 20px; color: var(--text); }
         .logo span { color: var(--primary); }
-        .wallet { background: #000; border: 1px solid var(--success); padding: 5px 15px; border-radius: 20px; font-weight: bold; color: var(--success); }
+        .wallet { background: #000; border: 1px solid var(--success); padding: 5px 12px; border-radius: 20px; font-weight: bold; color: var(--success); font-size: 14px; }
         
         .app-content { flex: 1; overflow-y: auto; padding-bottom: 80px; }
         .page { display: none; padding: 15px; }
         .page.active { display: block; }
         
         .category-bar { display: flex; gap: 10px; overflow-x: auto; padding: 10px; background: #000; }
-        .cat-btn { background: var(--card); border: 1px solid #334155; padding: 8px 15px; border-radius: 8px; white-space: nowrap; color: #94a3b8; font-size: 14px; cursor: pointer; }
+        .cat-btn { background: var(--card); border: 1px solid #334155; padding: 8px 15px; border-radius: 8px; white-space: nowrap; color: #94a3b8; font-size: 13px; cursor: pointer; }
         .cat-btn.active { background: var(--primary); color: #000; }
 
         .game-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -54,8 +62,19 @@
 
     <div id="main-app" style="display:none;">
         <header>
-            <div class="logo">10X<span>BAT</span></div>
-            <div class="wallet">₹ <span id="user-bal">...</span></div>
+            <div class="top-row">
+                <div class="user-info">
+                    <div class="pfp" id="u-char">?</div>
+                    <div class="u-det">
+                        <div class="u-name-display" id="u-full-name">Loading...</div>
+                        <div class="u-id-display" id="u-id-val">ID: 000000</div>
+                    </div>
+                </div>
+                <div class="logo">10X<span>BAT</span></div>
+            </div>
+            <div style="display:flex; justify-content:flex-end;">
+                <div class="wallet">₹ <span id="user-bal">...</span></div>
+            </div>
         </header>
 
         <div class="category-bar">
@@ -120,14 +139,14 @@
         function doAuth(type) {
             let u = document.getElementById('u-login').value.trim();
             let p = document.getElementById('p-login').value.trim();
-            if(!u || !p) return alert("Fill all!");
+            if(!u || !p) return alert("Badhu lakho!");
 
             db.ref('users/' + u).once('value', s => {
                 if(type === 'login') {
                     if(s.exists() && s.val().password === p) { saveAndStart(u); }
-                    else { alert("Wrong ID/PW!"); }
+                    else { alert("ID ke Password khoto chhe!"); }
                 } else {
-                    if(s.exists()) { alert("Exists!"); }
+                    if(s.exists()) { alert("Aa ID pehla thi chhe!"); }
                     else { db.ref('users/' + u).set({password: p, balance: 10000}).then(() => saveAndStart(u)); }
                 }
             });
@@ -143,6 +162,11 @@
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             
+            // Set User Header Data
+            document.getElementById('u-full-name').innerText = curU;
+            document.getElementById('u-char').innerText = curU.charAt(0).toUpperCase();
+            document.getElementById('u-id-val').innerText = "ID: XBAT" + Math.floor(1000 + Math.random() * 9000);
+
             db.ref('users/'+curU+'/balance').on('value', s => {
                 document.getElementById('user-bal').innerText = s.val() || 0;
             });
@@ -188,8 +212,8 @@
                 if(a >= 500 && a <= bal) {
                     db.ref('users/'+curU).update({balance: bal - a});
                     db.ref('withdrawals').push({user:curU, amt:a, upi:document.getElementById('upi').value});
-                    alert("Success!");
-                } else { alert("Error!"); }
+                    alert("Request Sent!");
+                } else { alert("Balance low chhe ke amount khoti chhe!"); }
             });
         }
 
