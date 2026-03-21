@@ -3,53 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>10X-BAT OFFICIAL BOOKIE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <title>10X-BAT | INDIA'S #1 EXCHANGE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #020617; --card: #0f172a; --primary: #38bdf8; --success: #10b981; --danger: #ef4444; --accent: #f59e0b; --text: #f8fafc; }
+        :root { --bg: #010409; --card: #0d1117; --primary: #38bdf8; --success: #22c55e; --danger: #ef4444; --accent: #f59e0b; --text: #f0f6fc; }
         
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; user-select: none; height: 100vh; width: 100vw; overflow: hidden; display: flex; flex-direction: column; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; user-select: none; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* Mobile Header Fixed */
-        header { background: #000; padding: 15px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: center; width: 100%; height: 65px; flex-shrink: 0; }
-        .logo { font-family: 'Orbitron'; font-weight: 800; font-size: 18px; color: #fff; }
+        /* Professional Header */
+        header { background: #000; padding: 12px 15px; border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 5px 20px rgba(56, 189, 248, 0.2); }
+        .logo { font-family: 'Orbitron'; font-weight: 800; font-size: 20px; color: #fff; letter-spacing: 1px; }
         .logo span { color: var(--primary); }
-        .wallet-badge { background: #111; border: 1.5px solid var(--success); padding: 5px 12px; border-radius: 50px; font-weight: bold; color: var(--success); font-family: 'Orbitron'; font-size: 13px; box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
+        .wallet-box { background: linear-gradient(90deg, #000, #161b22); border: 1px solid var(--success); padding: 5px 15px; border-radius: 50px; font-weight: bold; color: var(--success); font-family: 'Orbitron'; font-size: 14px; box-shadow: 0 0 10px rgba(34, 197, 94, 0.3); }
 
-        /* Main Content Scrollable Area */
-        .app-content { flex: 1; overflow-y: auto; width: 100%; position: relative; }
-        .page { display: none; padding: 15px; width: 100%; }
+        /* Main Viewport */
+        .viewport { flex: 1; overflow-y: auto; background: radial-gradient(circle at top, #1e293b55, transparent); }
+        .page { display: none; padding: 15px; animation: slideIn 0.3s ease-out; }
         .page.active { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Dashboard Elements */
-        .hero-banner { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 25px; border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); width: 100%; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
-        .cat-card { background: var(--card); border-radius: 20px; padding: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-
-        /* Aviator Game Area */
-        .aviator-box { background: #000; border-radius: 20px; height: 230px; position: relative; overflow: hidden; margin-bottom: 15px; border: 1.5px solid #1e293b; width: 100%; }
-        #rocket { position: absolute; bottom: 20px; left: 20px; font-size: 38px; z-index: 10; display: none; filter: drop-shadow(0 0 15px var(--danger)); transition: transform 0.1s linear; }
-        #multiplier { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); font-size: 60px; font-family: 'Orbitron'; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.4); text-align: center; }
+        /* Reddy Anna Style Banner */
+        .promo-card { background: linear-gradient(135deg, #0f172a, #1e293b); border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid rgba(56, 189, 248, 0.2); position: relative; overflow: hidden; }
+        .promo-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, var(--primary) 0%, transparent 70%); opacity: 0.1; }
+        .promo-title { font-family: 'Orbitron'; font-size: 22px; color: var(--primary); margin: 0; }
         
-        .timer-box { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 50; }
-        #timer-val { font-size: 70px; color: var(--accent); font-family: 'Orbitron'; font-weight: bold; }
+        /* Grid Layout for Games */
+        .section-tag { font-family: 'Orbitron'; font-size: 13px; color: #8b949e; margin-bottom: 12px; display: block; letter-spacing: 2px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .game-card { background: var(--card); border-radius: 18px; padding: 25px 15px; text-align: center; border: 1px solid #30363d; transition: 0.3s; position: relative; }
+        .game-card:active { transform: scale(0.95); background: #161b22; border-color: var(--primary); }
+        .game-icon { font-size: 45px; margin-bottom: 10px; display: block; }
+        .live-dot { position: absolute; top: 12px; right: 12px; width: 8px; height: 8px; background: var(--danger); border-radius: 50%; box-shadow: 0 0 10px var(--danger); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        /* Buttons & Inputs */
-        .bet-box { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); width: 100%; }
-        .auth-input { width: 100%; background: #000; border: 1px solid #334155; color: var(--accent); padding: 15px; border-radius: 12px; text-align: center; font-size: 24px; font-family: 'Orbitron'; margin-bottom: 12px; outline: none; }
-        .btn { border: none; padding: 18px; border-radius: 12px; font-weight: bold; cursor: pointer; font-family: 'Rajdhani'; font-size: 20px; width: 100%; text-transform: uppercase; transition: 0.2s; }
-        .btn-bet { background: linear-gradient(180deg, var(--success), #059669); color: #000; }
-        .btn-cash { background: linear-gradient(180deg, var(--accent), #d97706); color: #000; display: none; }
+        /* Aviator Game UI Fix */
+        .aviator-screen { background: #000; border-radius: 20px; height: 240px; position: relative; overflow: hidden; border: 2px solid #30363d; margin-bottom: 20px; }
+        #multiplier { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 65px; font-family: 'Orbitron'; font-weight: 800; color: #fff; z-index: 5; }
+        #rocket { position: absolute; bottom: 20px; left: 20px; font-size: 40px; display: none; filter: drop-shadow(0 0 15px var(--danger)); }
 
-        /* Navigation Bar Fixed */
-        .bottom-tabs { background: #000; padding: 10px 0; border-top: 1.5px solid #1e293b; display: flex; justify-content: space-around; height: 75px; flex-shrink: 0; }
-        .tab-item { color: #64748b; font-size: 11px; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; cursor: pointer; }
-        .tab-item.active { color: var(--primary); }
+        /* Professional Buttons */
+        .bet-panel { background: #0d1117; padding: 20px; border-radius: 25px; border: 1px solid #30363d; }
+        .bet-input { width: 100%; background: #000; border: 1px solid #30363d; color: var(--accent); padding: 15px; border-radius: 12px; text-align: center; font-size: 22px; font-family: 'Orbitron'; margin-bottom: 15px; }
+        .btn-main { border: none; padding: 18px; border-radius: 15px; font-weight: bold; cursor: pointer; font-family: 'Rajdhani'; font-size: 20px; width: 100%; text-transform: uppercase; transition: 0.2s; }
+        .btn-green { background: linear-gradient(180deg, #238636, #2ea043); color: #fff; box-shadow: 0 4px 15px rgba(46, 160, 67, 0.4); }
+        .btn-orange { background: linear-gradient(180deg, #f0883e, #d97706); color: #000; display: none; }
 
-        /* Full Screen Auth Overlay */
-        #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 5000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 25px; }
-        .auth-card { background: var(--card); padding: 30px; border-radius: 25px; width: 100%; max-width: 360px; border: 1px solid rgba(255,255,255,0.1); text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+        /* Bottom Tab Nav */
+        nav { background: #010409; height: 75px; border-top: 1px solid #30363d; display: flex; justify-content: space-around; align-items: center; padding: 0 10px; z-index: 1000; }
+        .nav-tab { color: #8b949e; text-decoration: none; font-size: 11px; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+        .nav-tab.active { color: var(--primary); }
+        .nav-icon { font-size: 22px; }
+
+        /* Master Auth Fix */
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; }
+        .auth-box { background: var(--card); padding: 40px 30px; border-radius: 25px; width: 100%; max-width: 380px; border: 1px solid #30363d; text-align: center; }
     </style>
 </head>
 <body>
@@ -58,72 +66,86 @@
     <audio id="snd-fly" src="https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3" loop></audio>
     <audio id="snd-crash" src="https://assets.mixkit.co/active_storage/sfx/123/123-preview.mp3"></audio>
 
-    <div id="auth-screen">
-        <h1 style="font-family:'Orbitron'; color:var(--primary); font-size:38px; margin-bottom:30px;">10X<span>BAT</span></h1>
-        <div class="auth-card">
-            <input type="text" id="u-login" class="auth-input" placeholder="USERNAME" style="font-size:16px;">
-            <input type="password" id="p-login" class="auth-input" placeholder="PASSWORD" style="font-size:16px;">
-            <button class="btn btn-bet" onclick="doAuth()">LOGIN / JOIN</button>
+    <div id="auth-overlay">
+        <h1 style="font-family:'Orbitron'; color:var(--primary); font-size:40px; margin-bottom:40px;">10X<span>BAT</span></h1>
+        <div class="auth-box">
+            <input type="text" id="u-login" class="bet-input" placeholder="USERNAME" style="font-size:16px;">
+            <input type="password" id="p-login" class="bet-input" placeholder="PASSWORD" style="font-size:16px;">
+            <button class="btn-main btn-green" onclick="doAuth()">LOGIN TO ID</button>
+            <p style="color:#8b949e; margin-top:20px; font-size:12px;">Official Partner of Mahadev Book</p>
         </div>
     </div>
 
     <header>
         <div class="logo">10X<span>BAT</span></div>
-        <div class="wallet-badge">₹ <span id="user-bal">0</span></div>
+        <div class="wallet-box">₹ <span id="user-bal">0</span></div>
     </header>
 
-    <div class="app-content">
+    <div class="viewport">
         <div id="p-home" class="page active">
-            <div class="hero-banner">
-                <h2 style="margin:0; font-family:'Orbitron'; font-size:20px; color:var(--primary);">DASHBOARD</h2>
-                <p style="color:#64748b; margin:5px 0 0; font-size:14px; font-weight:bold;">Welcome Back, <span id="welcome-user">Krish_1</span></p>
-            </div>
-            <div class="grid-2">
-                <div class="cat-card" onclick="nav('aviator'); startCountdown();">
-                    <div style="font-size:45px; margin-bottom:10px;">🚀</div>
-                    <h3 style="margin:0;">AVIATOR</h3>
-                    <p style="color:var(--success); font-size:11px; font-weight:bold;">● LIVE</p>
+            <div class="promo-card">
+                <p style="margin:0; color:#8b949e; font-size:12px;">WELCOME BACK</p>
+                <h2 class="promo-title" id="welcome-name">USER_ID</h2>
+                <div style="margin-top:10px; display:flex; gap:10px;">
+                    <div style="background:var(--success); color:#000; padding:2px 8px; border-radius:5px; font-size:10px; font-weight:bold;">VIP ID</div>
+                    <div style="background:var(--primary); color:#000; padding:2px 8px; border-radius:5px; font-size:10px; font-weight:bold;">24x7 SUPPORT</div>
                 </div>
-                <div class="cat-card" onclick="nav('profile')">
-                    <div style="font-size:45px; margin-bottom:10px;">👤</div>
-                    <h3 style="margin:0;">PROFILE</h3>
-                    <p style="color:#64748b; font-size:11px;">SETTINGS</p>
+            </div>
+
+            <span class="section-tag">POPULAR GAMES</span>
+            <div class="grid-2">
+                <div class="game-card" onclick="nav('aviator'); startCountdown();">
+                    <span class="live-dot"></span>
+                    <span class="game-icon">🚀</span>
+                    <h3 style="margin:0; font-size:16px;">AVIATOR</h3>
+                    <p style="color:var(--success); font-size:11px; font-weight:bold;">99% RTP</p>
+                </div>
+                <div class="game-card" onclick="alert('Cricket Odds Live Soon!')">
+                    <span class="game-icon">🏏</span>
+                    <h3 style="margin:0; font-size:16px;">CRICKET</h3>
+                    <p style="color:#8b949e; font-size:11px;">MATCH ODDS</p>
+                </div>
+                <div class="game-card">
+                    <span class="game-icon">🎲</span>
+                    <h3 style="margin:0; font-size:16px;">CASINO</h3>
+                    <p style="color:#8b949e; font-size:11px;">BACCARAT</p>
+                </div>
+                <div class="game-card">
+                    <span class="game-icon">🎰</span>
+                    <h3 style="margin:0; font-size:16px;">SLOTS</h3>
+                    <p style="color:#8b949e; font-size:11px;">MEGAWIN</p>
                 </div>
             </div>
         </div>
 
         <div id="p-aviator" class="page">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <button onclick="nav('home')" style="background:rgba(255,255,255,0.1); border:none; color:#fff; padding:8px 15px; border-radius:10px; font-weight:bold;">← BACK</button>
-                <div id="hist-list" style="display:flex; gap:5px; overflow-x:auto;"></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                <button onclick="nav('home')" style="background:#161b22; border:1px solid #30363d; color:#fff; padding:8px 15px; border-radius:10px; font-weight:bold;">← BACK</button>
+                <div id="hist-list" style="display:flex; gap:6px;"></div>
             </div>
-            <div class="aviator-box">
-                <div id="countdown-box" class="timer-box"><div id="timer-val">3</div></div>
+            
+            <div class="aviator-screen">
+                <div id="countdown-box" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; z-index:50;">
+                    <div id="timer-val">3</div>
+                </div>
                 <div id="multiplier" style="display:none;">1.00x</div>
                 <div id="rocket">🚀</div>
                 <div id="crash-txt" style="position:absolute; top:60%; left:50%; transform:translate(-50%,-50%); color:var(--danger); font-size:28px; font-weight:bold; display:none; font-family:'Orbitron';">FLEW AWAY!</div>
             </div>
-            <div class="bet-box">
-                <input type="number" id="bet-amount" value="100" class="auth-input">
-                <button id="btn-bet" class="btn btn-bet" onclick="placeBet()">PLACE BET</button>
-                <button id="btn-cash" class="btn btn-cash" onclick="cashOut()">CASH OUT</button>
-            </div>
-        </div>
 
-        <div id="p-profile" class="page">
-            <div style="text-align:center; padding:30px; background:var(--card); border-radius:25px; border:1px solid rgba(255,255,255,0.05); width:100%;">
-                <div style="width:80px; height:80px; background:var(--primary); border-radius:20px; margin:0 auto 15px; display:flex; align-items:center; justify-content:center; font-size:35px; color:#000; font-weight:bold;" id="u-char">K</div>
-                <h2 id="u-name-profile" style="margin:0; font-family:'Orbitron'; font-size:20px;">User</h2>
+            <div class="bet-panel">
+                <input type="number" id="bet-amount" value="100" class="bet-input">
+                <button id="btn-bet" class="btn-main btn-green" onclick="placeBet()">PLACE BET</button>
+                <button id="btn-cash" class="btn-main btn-orange" onclick="cashOut()">CASH OUT</button>
             </div>
-            <button class="btn" style="background:var(--danger); color:#fff; margin-top:20px;" onclick="localStorage.clear(); location.reload();">LOGOUT ID</button>
-            <div style="text-align:center; margin-top:40px; opacity:0.1;" onclick="if(prompt('PIN:')==='9991') nav('master');">V 4.2.0</div>
         </div>
     </div>
 
-    <div class="bottom-tabs">
-        <div class="tab-item active" onclick="nav('home', this)"><span>🏠</span>Home</div>
-        <div class="tab-item" onclick="nav('profile', this)"><span>👤</span>Profile</div>
-    </div>
+    <nav>
+        <div class="nav-tab active" onclick="nav('home', this)"><span class="nav-icon">🏠</span>Home</div>
+        <div class="nav-tab" onclick="alert('Sports Exchange Soon!')"><span class="nav-icon">🏏</span>Sports</div>
+        <div class="nav-tab" onclick="location.reload()"><span class="nav-icon">👤</span>Profile</div>
+    </nav>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -137,20 +159,18 @@
         function doAuth() {
             let u = document.getElementById('u-login').value.trim();
             let p = document.getElementById('p-login').value.trim();
-            if(!u || !p) return alert("Fill data!");
+            if(!u || !p) return;
             db.ref('users/'+u).once('value', s => {
                 if(s.exists() && s.val().password === p) { localStorage.setItem('activeUser',u); location.reload(); }
-                else if(!s.exists()) { db.ref('users/'+u).set({password:p, balance:1000}).then(()=>{ localStorage.setItem('activeUser',u); location.reload(); }); }
-                else alert("Wrong Password!");
+                else if(!s.exists()) { db.ref('users/'+u).set({password:p, balance:10000}).then(()=>{ localStorage.setItem('activeUser',u); location.reload(); }); }
+                else alert("Password Wrong!");
             });
         }
 
         function init() {
             if(curU) {
-                document.getElementById('auth-screen').style.display = 'none';
-                document.getElementById('u-name-profile').innerText = curU;
-                document.getElementById('welcome-user').innerText = curU;
-                document.getElementById('u-char').innerText = curU.charAt(0).toUpperCase();
+                document.getElementById('auth-overlay').style.display = 'none';
+                document.getElementById('welcome-name').innerText = curU;
                 db.ref('users/'+curU+'/balance').on('value', s => { document.getElementById('user-bal').innerText = Math.floor(s.val() || 0); });
             }
         }
@@ -159,7 +179,7 @@
             if(p !== 'aviator') { clearInterval(gameInterval); sndFly.pause(); isPlaying = false; }
             document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
             document.getElementById('p-'+p).classList.add('active');
-            if(el) { document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active')); el.classList.add('active'); }
+            if(el) { document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); }
         }
 
         function startCountdown() {
@@ -179,17 +199,17 @@
             document.getElementById('rocket').style.display = 'block';
             sndFly.play(); isPlaying = true; currentMul = 1.0;
             db.ref('game_settings/aviator_crash').once('value', s => {
-                let actualCrash = (Math.random() * ((s.val()||3.0) - 1.1) + 1.1).toFixed(2);
+                let actualCrash = (Math.random() * ((s.val()||5.0) - 1.1) + 1.1).toFixed(2);
                 gameInterval = setInterval(() => {
-                    currentMul += 0.02 + (currentMul/160);
+                    currentMul += 0.02 + (currentMul/180);
                     document.getElementById('multiplier').innerText = currentMul.toFixed(2) + "x";
                     if(isBetPlaced) {
                         document.getElementById('btn-cash').style.display = 'block';
                         document.getElementById('btn-bet').style.display = 'none';
                         document.getElementById('btn-cash').innerText = "CASH OUT ₹" + Math.floor(betAmt * currentMul);
-                    }
+                    } else { document.getElementById('btn-bet').innerText = "FLYING..."; }
                     let r = document.getElementById('rocket');
-                    r.style.transform = `translate(${currentMul * 20}px, -${currentMul * 15}px) rotate(-45deg)`;
+                    r.style.transform = `translate(${currentMul * 25}px, -${currentMul * 18}px) rotate(-45deg)`;
                     if(currentMul >= actualCrash) crashGame(actualCrash);
                 }, 80);
             });
@@ -198,7 +218,7 @@
         function crashGame(res) {
             clearInterval(gameInterval); isPlaying = false; isBetPlaced = false;
             sndFly.pause(); sndFly.currentTime = 0; sndCrash.play();
-            document.getElementById('multiplier').style.color = 'red';
+            document.getElementById('multiplier').style.color = 'var(--danger)';
             document.getElementById('crash-txt').style.display = 'block';
             document.getElementById('btn-cash').style.display = 'none';
             document.getElementById('btn-bet').style.display = 'block';
@@ -210,7 +230,7 @@
             if(!canPlaceBet) return;
             let a = parseInt(document.getElementById('bet-amount').value);
             db.ref('users/'+curU+'/balance').once('value', s => {
-                if(s.val() >= a && a > 0) { betAmt = a; isBetPlaced = true; db.ref('users/'+curU).update({balance: s.val()-a}); document.getElementById('btn-bet').innerText = "WAITING..."; }
+                if(s.val() >= a) { betAmt = a; isBetPlaced = true; db.ref('users/'+curU).update({balance: s.val()-a}); document.getElementById('btn-bet').innerText = "WAITING..."; }
             });
         }
 
