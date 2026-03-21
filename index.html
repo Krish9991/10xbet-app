@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>10X-BAT MASTER PRO</title>
+    <title>10X-BAT SECURE MASTER</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #020617; --card: #1e293b; --primary: #38bdf8; --success: #10b981; --danger: #ef4444; --accent: #f59e0b; --text: #f8fafc; --nav: #0f172a; }
@@ -12,26 +12,21 @@
         .logo { font-family: 'Orbitron'; font-size: 22px; color: var(--text); }
         .logo span { color: var(--primary); }
         .wallet { background: #000; border: 1px solid var(--success); padding: 5px 15px; border-radius: 20px; font-weight: bold; color: var(--success); }
-        
         .app-content { flex: 1; overflow-y: auto; padding-bottom: 80px; }
         .page { display: none; padding: 15px; }
         .page.active { display: block; }
-
         .category-bar { display: flex; gap: 10px; overflow-x: auto; padding: 10px; background: #000; }
         .cat-btn { background: var(--card); border: 1px solid #334155; padding: 8px 15px; border-radius: 8px; white-space: nowrap; color: #94a3b8; font-size: 14px; }
         .cat-btn.active { background: var(--primary); color: #000; }
-
         .game-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .game-card { background: var(--card); border-radius: 12px; border: 1px solid #334155; text-align: center; padding: 10px; }
-        .play-btn { background: var(--primary); color: #000; border: none; width: 100%; padding: 8px; border-radius: 5px; font-weight: bold; margin-top: 5px; }
-
+        .game-card { background: var(--card); border-radius: 12px; border: 1px solid #334155; text-align: center; padding: 15px; }
+        .play-btn { background: var(--primary); color: #000; border: none; width: 100%; padding: 10px; border-radius: 5px; font-weight: bold; margin-top: 10px; cursor: pointer; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--nav); display: flex; justify-content: space-around; padding: 10px 0; border-top: 2px solid #1e293b; }
         .nav-item { color: #64748b; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; }
         .nav-item.active { color: var(--primary); }
-
-        /* Admin Style */
-        .admin-card { background: #0f172a; border-left: 4px solid var(--primary); padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .secret-admin-btn { background: transparent; border: 1px solid #1e293b; color: #1e293b; padding: 5px; width: 100%; margin-top: 20px; border-radius: 5px; font-size: 10px; }
+        .admin-card { background: #0f172a; border-left: 4px solid var(--primary); padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px; }
+        .admin-btn { background: var(--primary); color: #000; border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; }
+        .secret-link { display: none; color: #1e293b; text-align: center; margin-top: 20px; font-size: 12px; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -41,10 +36,10 @@
         <div class="wallet">₹ <span id="user-bal">0</span></div>
     </header>
 
-    <div class="category-bar" id="cat-nav">
-        <div class="cat-btn active" onclick="tab('casino', this)">🎰 Casino</div>
-        <div class="cat-btn" onclick="tab('slots', this)">🍒 Slots</div>
-        <div class="cat-btn" onclick="tab('sports', this)">🏏 Sports</div>
+    <div class="category-bar">
+        <div class="cat-btn active" onclick="nav('casino', this)">🎰 Casino</div>
+        <div class="cat-btn" onclick="nav('slots', this)">🍒 Slots</div>
+        <div class="cat-btn" onclick="nav('sports', this)">🏏 Sports</div>
     </div>
 
     <div class="app-content">
@@ -62,28 +57,30 @@
         <div id="p-sports" class="page">
             <div class="game-card" style="text-align:left;">
                 <p>🏏 <b>Live: IND vs AUS</b></p>
-                <button class="play-btn" style="width:45%">IND (1.9)</button>
-                <button class="play-btn" style="width:45%; background:var(--danger)">AUS (2.1)</button>
+                <div style="display:flex; gap:10px;">
+                    <button class="play-btn" style="background:var(--success)">IND (1.9)</button>
+                    <button class="play-btn" style="background:var(--danger)">AUS (2.1)</button>
+                </div>
             </div>
         </div>
 
         <div id="p-bank" class="page">
-            <h3>Withdraw</h3>
+            <h3>Withdraw Funds</h3>
             <div class="game-card">
-                <input type="text" id="upi" placeholder="UPI ID" style="width:100%; padding:10px; margin-bottom:10px; background:#000; color:#fff; border:1px solid #334155;">
-                <input type="number" id="amt" placeholder="Amount" style="width:100%; padding:10px; margin-bottom:10px; background:#000; color:#fff; border:1px solid #334155;">
-                <button class="play-btn" onclick="askWithdraw()">SEND REQUEST</button>
+                <input type="text" id="upi" placeholder="UPI ID" style="width:100%; padding:12px; margin-bottom:10px; background:#000; color:#fff; border:1px solid #334155; border-radius:8px;">
+                <input type="number" id="amt" placeholder="Amount (Min ₹500)" style="width:100%; padding:12px; margin-bottom:15px; background:#000; color:#fff; border:1px solid #334155; border-radius:8px;">
+                <button class="play-btn" onclick="askWithdraw()" style="background:var(--success)">SEND WITHDRAWAL REQUEST</button>
             </div>
-            <button class="secret-admin-btn" onclick="nav('master')">ADMIN ACCESS</button>
+            <div id="admin-trigger" class="secret-link" onclick="openMaster()">Admin Control Panel</div>
         </div>
 
         <div id="p-master" class="page" style="background:#000;">
-            <button class="play-btn" style="background:var(--danger); margin-bottom:20px;" onclick="nav('casino')">← BACK</button>
+            <button class="play-btn" style="background:var(--danger); margin-bottom:20px;" onclick="nav('casino')">← BACK TO APP</button>
             <h2 style="color:var(--primary)">🛠️ MASTER PANEL</h2>
-            <div id="user-list">Loading...</div>
+            <div id="user-list">Loading Users...</div>
             <hr>
-            <h4>Requests</h4>
-            <div id="req-list">No Pending.</div>
+            <h4>Pending Withdrawals</h4>
+            <div id="req-list">No requests found.</div>
         </div>
     </div>
 
@@ -98,7 +95,10 @@
     <script>
         const config = { apiKey: "AIzaSyDdURW00a3AheG1SZI67Itu_LZ9ddPBWG0", databaseURL: "https://xbat-5c582-default-rtdb.firebaseio.com", projectId: "xbat-5c582" };
         firebase.initializeApp(config); const db = firebase.database();
-        let curU = "Test_master"; // Set manual for fix
+        
+        // --- MASTER CONFIG ---
+        let curU = "Test_master"; // Jo tamaru username alag hoy to ahiya badli nakhjo
+        let masterPin = "9991"; 
 
         function nav(p, el) {
             document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
@@ -107,42 +107,46 @@
                 document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
                 el.classList.add('active');
             }
+            // Admin button khali Bank page par ane khali tamara mate dekhase
+            if(p === 'bank' && curU === "Test_master") {
+                document.getElementById('admin-trigger').style.display = 'block';
+            }
         }
 
-        function tab(t, el) {
-            document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
-            el.classList.add('active'); nav(t);
+        function openMaster() {
+            let p = prompt("Enter Secret PIN:");
+            if(p === masterPin) { nav('master'); } 
+            else { alert("Wrong PIN! Access Denied."); }
         }
 
-        // Realtime Data
         db.ref('users/'+curU+'/balance').on('value', s => { document.getElementById('user-bal').innerText = s.val() || 0; });
         
         db.ref('users').on('value', s => {
             let h = ""; s.forEach(c => {
-                h += `<div class="admin-card"><span>${c.key}: ₹${c.val().balance}</span><button onclick="editB('${c.key}')" style="background:var(--primary); border:none; padding:5px; border-radius:5px;">Edit</button></div>`;
+                h += `<div class="admin-card"><span><b>${c.key}</b><br>₹${c.val().balance}</span><button class="admin-btn" onclick="editB('${c.key}')">Edit</button></div>`;
             });
             document.getElementById('user-list').innerHTML = h;
         });
 
         db.ref('withdrawals').on('value', s => {
             let h = ""; s.forEach(c => {
-                h += `<div class="admin-card"><div>${c.val().user}<br>₹${c.val().amt}</div><button onclick="db.ref('withdrawals/${c.key}').remove()" style="background:var(--success); border:none; padding:5px;">Done</button></div>`;
+                h += `<div class="admin-card"><div><b>${c.val().user}</b><br>₹${c.val().amt}<br><small>${c.val().upi}</small></div><button class="admin-btn" style="background:var(--success)" onclick="db.ref('withdrawals/${c.key}').remove()">Done</button></div>`;
             });
-            document.getElementById('req-list').innerHTML = h || "No requests.";
+            document.getElementById('req-list').innerHTML = h || "No pending requests.";
         });
 
-        function editB(u) { let n = prompt("New Bal:"); if(n) db.ref('users/'+u).update({balance:parseInt(n)}); }
+        function editB(u) { let n = prompt("Enter New Balance for " + u); if(n) db.ref('users/'+u).update({balance:parseInt(n)}); }
         
         function askWithdraw() {
             let a = parseInt(document.getElementById('amt').value);
-            if(a >= 500) {
-                db.ref('withdrawals').push({user:curU, amt:a, upi:document.getElementById('upi').value});
-                alert("Sent!");
-            }
+            let upi = document.getElementById('upi').value;
+            if(a >= 500 && upi !== "") {
+                db.ref('withdrawals').push({user:curU, amt:a, upi:upi});
+                alert("Withdrawal Request Sent Successfully!");
+            } else { alert("Please enter valid amount (Min 500) and UPI ID!"); }
         }
 
-        // Slots generate
-        let sH = ""; for(let i=1;i<=10;i++) sH+=`<div class="game-card"><div>🎰</div><h4>Slot ${i}</h4><button class="play-btn">Play</button></div>`;
+        let sH = ""; for(let i=1;i<=12;i++) sH+=`<div class="game-card"><div>🎰</div><h4>Slot ${i}</h4><button class="play-btn">Play</button></div>`;
         document.getElementById('slots-area').innerHTML = sH;
     </script>
 </body>
