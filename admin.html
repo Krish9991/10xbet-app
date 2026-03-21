@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>10X-BAT MASTER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #0f172a; --card: #1e293b; --primary: #38bdf8; --success: #10b981; --danger: #ef4444; --accent: #f59e0b; --text: #f8fafc; }
+        body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; user-select: none; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        .auth-box { background: var(--card); padding: 30px; border-radius: 16px; width: 90%; max-width: 400px; text-align: center; margin: auto; border: 1px solid #334155; }
+        .auth-input { width: 100%; background: #000; border: 1px solid #334155; color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; }
+        header { background: rgba(15, 23, 42, 0.95); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
+        .wallet { background: #000; border: 1px solid var(--success); color: var(--success); padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+        .page { display: none; padding: 15px; height: 80vh; overflow-y: auto; }
+        .page.active { display: block; }
+        .card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 10px; border: 1px solid #475569; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #0f172a; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #334155; }
+        .nav-item { color: #64748b; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .nav-item.active { color: var(--primary); }
+        /* Admin Style */
+        #p-admin { background: #000; color: #fff; }
+        .admin-user-card { border-left: 4px solid var(--primary); background: #1e293b; padding: 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
+    </style>
+</head>
+<body>
+    <div id="auth-screen" style="display: flex; height: 100vh;">
+        <div class="auth-box">
+            <h1 style="font-family:'Orbitron'">10X<span>BAT</span></h1>
+            <input type="text" id="u" class="auth-input" placeholder="Username">
+            <input type="password" id="p" class="auth-input" placeholder="Password">
+            <button onclick="doAuth('login')" style="width:100%; padding:12px; background:var(--primary); border:none; border-radius:8px; font-weight:bold;">LOGIN</button>
+            <p onclick="doAuth('signup')" style="color:var(--primary); margin-top:15px; cursor:pointer;">New? Create Account</p>
+        </div>
+    </div>
+
+    <div id="main-app" style="display:none;">
+        <header>
+            <div style="font-family:'Orbitron'">10X<span>BAT</span></div>
+            <div class="wallet">₹ <span id="bal_disp">0</span></div>
+        </header>
+
+        <div id="p-home" class="page active">
+            <div class="card"><h3>Welcome, <span id="user_nm"></span></h3><p>Games start soon!</p></div>
+            <div class="card"><h4>🚀 Aviator</h4><button style="width:100%; padding:10px; background:var(--danger); border:none; color:#fff; border-radius:5px;">PLAY NOW</button></div>
+        </div>
+
+        <div id="p-bank" class="page">
+            <h3>Withdraw</h3>
+            <input type="text" id="upi_id" class="auth-input" placeholder="UPI ID">
+            <input type="number" id="amt_val" class="auth-input" placeholder="Amount">
+            <button onclick="withdraw()" style="width:100%; padding:12px; background:var(--success); border:none; border-radius:8px; color:#000; font-weight:bold;">WITHDRAW</button>
+        </div>
+
+        <div id="p-admin" class="page">
+            <h2 style="color:var(--primary)">🛠️ MASTER PANEL</h2>
+            <div id="admin-users-list">Loading Users...</div>
+            <hr>
+            <h4>Withdraw Requests</h4>
+            <div id="admin-withdrawals">No requests.</div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="nav('home', this)">Home</div>
+            <div class="nav-item" onclick="handleAdminTap(this)">Bank</div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <script>
+        const conf = { apiKey: "AIzaSyDdURW00a3AheG1SZI67Itu_LZ9ddPBWG0", databaseURL: "https://xbat-5c582-default-rtdb.firebaseio.com", projectId: "xbat-5c582" };
+        firebase.initializeApp(conf); const db = firebase.database();
+        let curU = ""; let curB = 0; let tapCount = 0;
+
+        function doAuth(t) {
+            let u = document.getElementById('u').value.trim();
+            let p = document.getElementById('p').value.trim();
+            if(!u) return;
+            db.ref('users/' + u).once('value', s => {
+                if(t==='login'){ if(s.exists() && s.val().password===p){ curU=u; launch(); }else alert("Error"); }
+                else { if(s.exists()) alert("Exists"); else db.ref('users/'+u).set({password:p, balance:10000}).then(()=>{curU=u; launch();}); }
+            });
+        }
+
+        function launch() {
+            document.getElementById('auth-screen').style.display='none';
+            document.getElementById('main-app').style.display='block';
+            document.getElementById('user_nm').innerText = curU;
+            db.ref('users/'+curU+'/balance').on('value', s => { curB=s.val(); document.getElementById('bal_disp').innerText=curB; });
+            loadMasterData();
+        }
+
+        function nav(p, el) {
+            document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(ni=>ni.classList.remove('active'));
+            document.getElementById('p-'+p).classList.add('active'); el.classList.add('active');
+        }
+
+        function handleAdminTap(el) {
+            tapCount++;
+            if(tapCount >= 5) { nav('admin', el); tapCount = 0; } 
+            else { nav('bank', el); }
+        }
+
+        function loadMasterData() {
+            db.ref('users').on('value', s => {
+                let html = "";
+                s.forEach(child => {
+                    html += `<div class="admin-user-card">
+                        <span>${child.key} (₹${child.val().balance})</span>
+                        <button onclick="editBal('${child.key}')" style="background:var(--primary); border:none; padding:5px; border-radius:4px;">Edit</button>
+                    </div>`;
+                });
+                document.getElementById('admin-users-list').innerHTML = html;
+            });
+            db.ref('withdrawals').on('value', s => {
+                let html = "";
+                s.forEach(child => {
+                    html += `<div class="card">
+                        <p>${child.val().user}: ₹${child.val().amount}</p>
+                        <small>${child.val().upi}</small>
+                        <button onclick="db.ref('withdrawals/${child.key}').remove()" style="background:var(--danger); border:none; padding:5px; margin-left:10px; color:#fff;">Done</button>
+                    </div>`;
+                });
+                document.getElementById('admin-withdrawals').innerHTML = html || "No pending requests.";
+            });
+        }
+
+        function editBal(user) {
+            let n = prompt("Enter new balance for " + user);
+            if(n) db.ref('users/' + user).update({ balance: parseInt(n) });
+        }
+
+        function withdraw() {
+            let a = parseInt(document.getElementById('amt_val').value);
+            if(a >= 500 && a <= curB) {
+                db.ref('users/'+curU).update({ balance: curB - a });
+                db.ref('withdrawals').push({ user: curU, amount: a, upi: document.getElementById('upi_id').value });
+                alert("Request Sent!");
+            } else alert("Error!");
+        }
+    </script>
+</body>
+</html>
