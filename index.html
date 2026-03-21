@@ -3,65 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>10X-BAT ULTIMATE PRO</title>
+    <title>10X-BAT | OFFICIAL EXCHANGE</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #020617; --card: rgba(30, 41, 59, 0.6); --primary: #38bdf8; --success: #10b981; --danger: #ef4444; --accent: #f59e0b; --text: #f8fafc; }
-        body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; user-select: none; height: 100vh; overflow: hidden; }
-        
-        header { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
-        .wallet { background: #000; border: 1.5px solid var(--success); padding: 5px 15px; border-radius: 50px; font-weight: bold; color: var(--success); font-family: 'Orbitron'; box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
+        :root { --bg: #020617; --card: #111827; --primary: #38bdf8; --success: #10b981; --danger: #ef4444; --accent: #f59e0b; --text: #f8fafc; --nav: #0f172a; }
+        body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; user-select: none; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        .app-content { padding: 20px; flex: 1; overflow-y: auto; }
-        
-        /* Aviator Arena */
-        .aviator-box { background: #000; border-radius: 20px; height: 250px; position: relative; overflow: hidden; margin-bottom: 20px; border: 1.5px solid rgba(56, 189, 248, 0.2); }
-        #rocket { position: absolute; bottom: 20px; left: 20px; font-size: 38px; z-index: 10; display: none; filter: drop-shadow(0 0 15px #ff4d4d); transition: transform 0.05s linear; }
-        #multiplier { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 65px; font-family: 'Orbitron'; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.4); z-index: 5; }
-        
-        #countdown-box { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 50; }
-        #timer-val { font-size: 75px; color: var(--accent); font-family: 'Orbitron'; font-weight: 800; text-shadow: 0 0 25px var(--accent); }
+        /* Modern Header */
+        header { background: var(--nav); padding: 12px 15px; border-bottom: 2px solid #1e293b; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
+        .logo { font-family: 'Orbitron'; font-weight: 800; font-size: 20px; color: #fff; }
+        .logo span { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+        .wallet-badge { background: linear-gradient(90deg, #000, #111); border: 1px solid var(--success); padding: 5px 12px; border-radius: 50px; font-weight: bold; color: var(--success); font-family: 'Orbitron'; font-size: 13px; box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
 
-        /* Super Smooth Buttons */
-        .bet-box { background: var(--card); padding: 20px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .auth-input { width: 100%; background: #000; border: 1px solid #334155; color: var(--accent); padding: 15px; border-radius: 15px; text-align: center; font-size: 24px; font-family: 'Orbitron'; margin-bottom: 15px; outline: none; }
-        
-        .btn { border: none; padding: 18px; border-radius: 15px; font-weight: 800; cursor: pointer; font-family: 'Rajdhani'; font-size: 22px; width: 100%; text-transform: uppercase; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        .btn-bet { background: linear-gradient(180deg, #10b981, #059669); color: #000; box-shadow: 0 6px 0 #047857, 0 10px 20px rgba(16, 185, 129, 0.4); }
-        .btn-bet:active { transform: translateY(4px); box-shadow: 0 2px 0 #047857; }
-        
-        .btn-cash { background: linear-gradient(180deg, #f59e0b, #d97706); color: #000; display: none; box-shadow: 0 6px 0 #b45309, 0 10px 20px rgba(245, 158, 11, 0.4); animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
-        
-        .btn-disabled { background: #1e293b !important; color: #475569 !important; box-shadow: none !important; cursor: not-allowed; transform: none !important; }
+        .app-content { flex: 1; overflow-y: auto; padding-bottom: 90px; }
+        .page { display: none; padding: 15px; animation: slideIn 0.3s ease-out; }
+        .page.active { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* Dashboard Banners */
+        .hero-banner { background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden; }
+        .hero-banner::after { content: ''; position: absolute; top: -50%; right: -20%; width: 150px; height: 150px; background: var(--primary); filter: blur(80px); opacity: 0.2; }
+
+        /* Game Categories Grid */
+        .section-label { font-family: 'Orbitron'; font-size: 14px; margin: 20px 0 15px; color: var(--primary); letter-spacing: 1px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .cat-item { background: var(--card); border-radius: 20px; padding: 25px 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); transition: 0.2s; position: relative; }
+        .cat-item:active { transform: scale(0.95); background: #1e293b; }
+        .cat-icon { font-size: 40px; margin-bottom: 10px; display: block; }
+        .live-tag { position: absolute; top: 10px; right: 10px; background: var(--danger); font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* Sports / Betting List */
+        .match-card { background: #000; border: 1px solid #1e293b; border-radius: 15px; padding: 15px; margin-bottom: 12px; }
+        .odds-row { display: flex; gap: 10px; margin-top: 10px; }
+        .odds-btn { flex: 1; background: #1e293b; border: 1px solid var(--primary); color: var(--primary); padding: 10px; border-radius: 8px; font-weight: bold; font-family: 'Orbitron'; font-size: 13px; }
+
+        /* Profile & Settings */
+        .profile-card { background: var(--card); border-radius: 25px; padding: 30px 20px; text-align: center; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .pfp-main { width: 80px; height: 80px; background: linear-gradient(45deg, var(--primary), #818cf8); border-radius: 20px; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 35px; color: #000; font-weight: 800; box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3); }
+        .list-btn { width: 100%; background: #1e293b; border: none; color: #fff; padding: 15px; border-radius: 12px; margin-bottom: 10px; text-align: left; font-weight: bold; display: flex; justify-content: space-between; }
+
+        /* Bottom Tab Navigation */
+        .bottom-tabs { position: fixed; bottom: 0; left: 0; right: 0; background: var(--nav); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #1e293b; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
+        .tab-item { color: #64748b; font-size: 11px; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .tab-item.active { color: var(--primary); }
+        .tab-icon { font-size: 20px; }
     </style>
 </head>
 <body>
 
-    <audio id="snd-tick" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
-    <audio id="snd-fly" src="https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3" loop></audio>
-    <audio id="snd-crash" src="https://assets.mixkit.co/active_storage/sfx/123/123-preview.mp3"></audio>
-
     <header>
-        <div style="font-family:'Orbitron'; font-weight:800; font-size:20px;">10X<span>BAT</span></div>
-        <div class="wallet">₹ <span id="user-bal">0</span></div>
+        <div class="logo">10X<span>BAT</span></div>
+        <div class="wallet-badge">₹ <span id="user-bal">0</span></div>
     </header>
 
     <div class="app-content">
-        <div class="aviator-box">
-            <div id="countdown-box"><div id="timer-val">3</div></div>
-            <div id="multiplier" style="display:none;">1.00x</div>
-            <div id="rocket">🚀</div>
-            <div id="crash-txt" style="position:absolute; top:60%; left:50%; transform:translate(-50%,-50%); color:var(--danger); font-size:30px; font-weight:bold; display:none; font-family:'Orbitron';">FLEW AWAY!</div>
+        <div id="p-home" class="page active">
+            <div class="hero-banner">
+                <h2 style="margin:0; font-family:'Orbitron'; font-size:22px; color:var(--primary);">VIP EXCHANGE</h2>
+                <p style="margin:8px 0 0; font-size:13px; color:#94a3b8; letter-spacing:1px;">Trusted by 50K+ Users in India</p>
+                <button style="margin-top:15px; background:var(--success); border:none; padding:8px 15px; border-radius:8px; font-weight:bold; font-size:12px;">DEPOSIT NOW</button>
+            </div>
+
+            <div class="section-label">LIVE CASINO & GAMES</div>
+            <div class="grid-2">
+                <div class="cat-item" onclick="alert('Aviator Code integrated here!')">
+                    <span class="live-tag">LIVE</span>
+                    <span class="cat-icon">🚀</span>
+                    <h3 style="margin:5px 0; font-size:16px;">AVIATOR</h3>
+                </div>
+                <div class="cat-item" onclick="nav('sports')">
+                    <span class="cat-icon">🎲</span>
+                    <h3 style="margin:5px 0; font-size:16px;">ROULETTE</h3>
+                </div>
+            </div>
+
+            <div class="section-label">PREMIUM SLOTS</div>
+            <div class="grid-2">
+                <div class="cat-item"><span class="cat-icon">🎰</span><h3>GATES OF 10X</h3></div>
+                <div class="cat-item"><span class="cat-icon">🍬</span><h3>SUGAR RUSH</h3></div>
+            </div>
         </div>
 
-        <div class="bet-box">
-            <input type="number" id="bet-amount" value="100" class="auth-input">
-            <button id="btn-bet" class="btn btn-bet" onclick="placeBet()">PLACE BET</button>
-            <button id="btn-cash" class="btn btn-cash" onclick="cashOut()">CASH OUT</button>
+        <div id="p-sports" class="page">
+            <div class="section-label">CRICKET EXCHANGE</div>
+            <div class="match-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <span style="font-weight:bold; font-size:15px;">🇮🇳 INDIA vs 🇦🇺 AUSTRALIA</span>
+                    <span style="color:var(--danger); font-weight:bold; font-size:12px;">● LIVE</span>
+                </div>
+                <div class="odds-row">
+                    <button class="odds-btn" style="background:rgba(56, 189, 248, 0.1)">Back: 1.90</button>
+                    <button class="odds-btn" style="border-color:var(--danger); color:var(--danger)">Lay: 1.92</button>
+                </div>
+            </div>
+            
+            <div class="match-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <span style="font-weight:bold; font-size:15px;">🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG vs 🇿🇦 RSA</span>
+                    <span style="color:#64748b; font-size:12px;">Starts at 19:30</span>
+                </div>
+                <div class="odds-row">
+                    <button class="odds-btn">1.85</button>
+                    <button class="odds-btn">2.10</button>
+                </div>
+            </div>
         </div>
-        
-        <div id="hist-list" style="display:flex; gap:8px; margin-top:20px; overflow-x:auto; padding-bottom:10px;"></div>
+
+        <div id="p-profile" class="page">
+            <div class="profile-card">
+                <div class="pfp-main" id="u-char">K</div>
+                <h2 id="u-name-top" style="margin:0; font-family:'Orbitron';">User Name</h2>
+                <div style="color:var(--success); font-weight:bold; margin-top:5px; font-size:14px;">Verified Client ✅</div>
+            </div>
+
+            <button class="list-btn" onclick="alert('Account History: No entries')">Account Statement <span>📊</span></button>
+            <button class="list-btn" onclick="alert('Contact Admin for Deposit')">Deposit Funds <span>💰</span></button>
+            <button class="list-btn" onclick="alert('Requesting Withdraw...')">Withdrawal Request <span>🏦</span></button>
+            <button class="list-btn" style="color:var(--danger); margin-top:20px;" onclick="localStorage.clear(); location.reload();">Logout Session <span>🚪</span></button>
+            
+            <div style="text-align:center; margin-top:30px; opacity:0.2; font-size:12px;" onclick="if(prompt('PIN:')==='9991') alert('Master Admin Mode On');">
+                APP VERSION: 4.2.0 (STABLE)
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-tabs">
+        <div class="tab-item active" onclick="nav('home', this)">
+            <span class="tab-icon">🏠</span>Home
+        </div>
+        <div class="tab-item" onclick="nav('sports', this)">
+            <span class="tab-icon">🏏</span>Sports
+        </div>
+        <div class="tab-item" onclick="nav('profile', this)">
+            <span class="tab-icon">👤</span>Profile
+        </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -69,118 +145,23 @@
     <script>
         const config = { apiKey: "AIzaSyDdURW00a3AheG1SZI67Itu_LZ9ddPBWG0", databaseURL: "https://xbat-5c582-default-rtdb.firebaseio.com", projectId: "xbat-5c582" };
         firebase.initializeApp(config); const db = firebase.database();
-        let curU = localStorage.getItem('activeUser') || "Krish", isPlaying = false, currentMul = 1.0, gameInterval, betAmt = 0, isBetPlaced = false, canPlaceBet = true;
-
-        const sndTick = document.getElementById('snd-tick');
-        const sndFly = document.getElementById('snd-fly');
-        const sndCrash = document.getElementById('snd-crash');
+        let curU = localStorage.getItem('activeUser') || "Guest_User";
 
         function init() {
-            db.ref('users/'+curU+'/balance').on('value', s => { document.getElementById('user-bal').innerText = Math.floor(s.val() || 0); });
-            startCountdown();
-        }
-
-        function startCountdown() {
-            canPlaceBet = true;
-            document.getElementById('btn-bet').classList.remove('btn-disabled');
-            document.getElementById('btn-bet').innerText = "PLACE BET";
-            document.getElementById('btn-bet').style.display = 'block';
-            document.getElementById('btn-cash').style.display = 'none';
-            
-            document.getElementById('countdown-box').style.display = 'block';
-            document.getElementById('multiplier').style.display = 'none';
-            document.getElementById('rocket').style.display = 'none';
-            document.getElementById('crash-txt').style.display = 'none';
-            
-            let count = 3; document.getElementById('timer-val').innerText = count;
-            let t = setInterval(() => {
-                sndTick.play();
-                count--;
-                if(count > 0) document.getElementById('timer-val').innerText = count;
-                else { clearInterval(t); launchRocket(); }
-            }, 1000);
-        }
-
-        function launchRocket() {
-            canPlaceBet = false;
-            document.getElementById('countdown-box').style.display = 'none';
-            document.getElementById('multiplier').style.display = 'block';
-            document.getElementById('rocket').style.display = 'block';
-            document.getElementById('multiplier').style.color = '#fff';
-            sndFly.play();
-            
-            isPlaying = true; currentMul = 1.0;
-            
-            // MASTER PROFIT LOGIC (High chance of long fly)
-            let baseMax = 2.5; 
-            db.ref('game_settings/aviator_crash').once('value', s => {
-                let adminMax = s.val() || 5.0;
-                // Randomly decide if this round is a "Big Win"
-                let isJackpot = Math.random() > 0.7; 
-                let actualCrash = isJackpot ? (Math.random() * (adminMax - 2.0) + 2.0) : (Math.random() * (2.0 - 1.1) + 1.1);
-                actualCrash = parseFloat(actualCrash).toFixed(2);
-
-                gameInterval = setInterval(() => {
-                    // Smooth Multiplier speed
-                    let increment = 0.01 + (currentMul / 180);
-                    currentMul += increment;
-                    document.getElementById('multiplier').innerText = currentMul.toFixed(2) + "x";
-                    
-                    if(isBetPlaced) {
-                        document.getElementById('btn-cash').style.display = 'block';
-                        document.getElementById('btn-bet').style.display = 'none';
-                        document.getElementById('btn-cash').innerText = "CASH OUT ₹" + Math.floor(betAmt * currentMul);
-                    } else {
-                        document.getElementById('btn-bet').classList.add('btn-disabled');
-                        document.getElementById('btn-bet').innerText = "FLYING...";
-                    }
-                    
-                    let r = document.getElementById('rocket');
-                    r.style.transform = `translate(${currentMul * 22}px, -${currentMul * 16}px) rotate(-45deg)`;
-                    
-                    if(currentMul >= actualCrash) crashGame(actualCrash);
-                }, 60);
+            document.getElementById('u-name-top').innerText = curU;
+            document.getElementById('u-char').innerText = curU.charAt(0).toUpperCase();
+            db.ref('users/'+curU+'/balance').on('value', s => { 
+                document.getElementById('user-bal').innerText = Math.floor(s.val() || 0); 
             });
         }
 
-        function placeBet() {
-            if(!canPlaceBet) return;
-            let a = parseInt(document.getElementById('bet-amount').value);
-            db.ref('users/'+curU+'/balance').once('value', s => {
-                if(s.val() >= a && a > 0) {
-                    betAmt = a; isBetPlaced = true;
-                    db.ref('users/'+curU).update({balance: s.val() - a});
-                    document.getElementById('btn-bet').innerText = "WAITING...";
-                    document.getElementById('btn-bet').classList.add('btn-disabled');
-                }
-            });
-        }
-
-        function cashOut() {
-            if(!isPlaying || !isBetPlaced) return;
-            let win = Math.floor(betAmt * currentMul);
-            db.ref('users/'+curU+'/balance').once('value', s => {
-                db.ref('users/'+curU).update({balance: s.val() + win});
-                isBetPlaced = false; betAmt = 0;
-                document.getElementById('btn-cash').style.display = 'none';
-                document.getElementById('btn-bet').style.display = 'block';
-                document.getElementById('btn-bet').innerText = "FLYING...";
-            });
-        }
-
-        function crashGame(res) {
-            clearInterval(gameInterval); isPlaying = false; isBetPlaced = false;
-            sndFly.pause(); sndFly.currentTime = 0; sndCrash.play();
-            document.getElementById('multiplier').style.color = 'var(--danger)';
-            document.getElementById('crash-txt').style.display = 'block';
-            
-            let h = document.createElement('div');
-            h.style.background='rgba(56,189,248,0.1)'; h.style.padding='4px 10px'; h.style.borderRadius='8px'; h.style.fontSize='12px'; h.style.color='var(--primary)'; h.style.border='1px solid var(--primary)';
-            h.innerText = res + 'x';
-            document.getElementById('hist-list').prepend(h);
-            if(document.getElementById('hist-list').children.length > 8) document.getElementById('hist-list').lastChild.remove();
-
-            setTimeout(() => { startCountdown(); }, 3000);
+        function nav(p, el) {
+            document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+            document.getElementById('p-'+p).classList.add('active');
+            if(el) {
+                document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                el.classList.add('active');
+            }
         }
 
         init();
