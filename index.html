@@ -3,41 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>10X-BAT PRO SOUND FIX</title>
+    <title>10X-BAT MULTI-GAME PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #020617; --card: #1e293b; --primary: #38bdf8; --success: #10b981; --danger: #ef4444; --text: #f8fafc; --nav: #0f172a; --accent: #f59e0b; }
         body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; user-select: none; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        
         header { background: var(--nav); padding: 10px 15px; border-bottom: 2px solid #1e293b; display: flex; justify-content: space-between; align-items: center; }
         .user-box { display: flex; align-items: center; gap: 8px; cursor: pointer; }
         .pfp { width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; }
-        .wallet { background: #000; border: 1px solid var(--success); padding: 4px 12px; border-radius: 20px; font-weight: bold; color: var(--success); }
+        .wallet { background: #000; border: 1px solid var(--success); padding: 4px 12px; border-radius: 20px; font-weight: bold; color: var(--success); font-size: 14px; }
+
         .app-content { flex: 1; overflow-y: auto; padding-bottom: 80px; }
         .page { display: none; padding: 15px; }
         .page.active { display: block; }
+
+        /* Lobby Grid */
+        .game-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .game-card { background: var(--card); border-radius: 15px; padding: 20px; text-align: center; border: 1px solid #334155; position: relative; }
+        .game-card h3 { margin: 10px 0 5px 0; font-size: 16px; }
+
+        /* Aviator Style */
         .history-bar { display: flex; gap: 6px; overflow-x: auto; padding: 5px 0; margin-bottom: 10px; scrollbar-width: none; }
         .hist-item { background: rgba(56, 189, 248, 0.1); color: var(--primary); padding: 2px 8px; border-radius: 8px; font-size: 10px; font-family: 'Orbitron'; border: 1px solid #1e293b; }
-        .aviator-box { background: #000; border: 2px solid #1e293b; border-radius: 15px; height: 240px; position: relative; overflow: hidden; margin-bottom: 15px; background-image: radial-gradient(#1e293b 0.5px, transparent 0.5px); background-size: 20px 20px; }
-        #rocket { position: absolute; bottom: 20px; left: 20px; font-size: 35px; z-index: 10; display: none; transition: transform 0.1s linear; }
-        #multiplier { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 55px; font-family: 'Orbitron'; color: #fff; z-index: 5; }
+        .aviator-box { background: #000; border: 2px solid #1e293b; border-radius: 15px; height: 220px; position: relative; overflow: hidden; margin-bottom: 15px; }
+        #rocket { position: absolute; bottom: 20px; left: 20px; font-size: 35px; z-index: 10; display: none; }
+        #multiplier { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 55px; font-family: 'Orbitron'; color: #fff; }
         #countdown-box { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 50; }
-        .timer-num { color: var(--accent); font-size: 65px; font-family: 'Orbitron'; font-weight: bold; }
-        .crash-msg { position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%); color: var(--danger); font-size: 28px; font-weight: bold; display: none; font-family: 'Orbitron'; }
+        .timer-num { color: var(--accent); font-size: 60px; font-family: 'Orbitron'; font-weight: bold; }
+        
         .bet-box { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid #334155; }
         .auth-input { width: 100%; background: #000; border: 1px solid #334155; color: var(--accent); padding: 12px; border-radius: 8px; box-sizing: border-box; text-align: center; font-size: 20px; font-family: 'Orbitron'; margin-bottom: 10px; }
         .btn { border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; font-family: 'Rajdhani'; font-size: 18px; width: 100%; text-transform: uppercase; }
         .btn-bet { background: var(--success); color: #000; }
         .btn-cash { background: var(--accent); color: #000; display: none; }
-        .btn-disabled { background: #334155 !important; color: #64748b !important; cursor: not-allowed; }
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--nav); display: flex; justify-content: space-around; padding: 10px 0; border-top: 2px solid #1e293b; }
+        .nav-item { color: #64748b; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .nav-item.active { color: var(--primary); }
+
+        #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
     </style>
 </head>
 <body>
 
-    <audio id="snd-tick" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
-    <audio id="snd-fly" src="https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3" loop preload="auto"></audio>
-    <audio id="snd-crash" src="https://assets.mixkit.co/active_storage/sfx/123/123-preview.mp3" preload="auto"></audio>
+    <audio id="snd-tick" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+    <audio id="snd-fly" src="https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3" loop></audio>
+    <audio id="snd-crash" src="https://assets.mixkit.co/active_storage/sfx/123/123-preview.mp3"></audio>
 
-    <div id="main-app">
+    <div id="auth-screen">
+        <div style="background:var(--card); padding:30px; border-radius:16px; width:100%; max-width:400px; text-align:center; border:1px solid #334155;">
+            <h1 style="font-family:'Orbitron'">10X<span>BAT</span></h1>
+            <input type="text" id="u-login" class="auth-input" placeholder="Username" style="font-size:16px;">
+            <input type="password" id="p-login" class="auth-input" placeholder="Password" style="font-size:16px;">
+            <button class="btn btn-bet" onclick="doAuth()">LOGIN</button>
+        </div>
+    </div>
+
+    <div id="main-app" style="display:none;">
         <header>
             <div class="user-box" onclick="doLogout()">
                 <div class="pfp" id="u-char">K</div>
@@ -47,13 +70,37 @@
         </header>
 
         <div class="app-content">
-            <div id="p-aviator" class="page active">
-                <div class="history-bar" id="hist-list"></div>
+            <div id="p-lobby" class="page active">
+                <h2 style="font-size:20px; margin-bottom:15px;">Hot Games 🔥</h2>
+                <div class="game-grid">
+                    <div class="game-card" onclick="openAviator()">
+                        <div style="font-size:40px;">🚀</div>
+                        <h3>Aviator</h3>
+                        <p style="color:var(--success); font-size:12px;">ACTIVE</p>
+                    </div>
+                    <div class="game-card" onclick="alert('Coming Soon!')">
+                        <div style="font-size:40px; opacity:0.3;">🎰</div>
+                        <h3>Slots</h3>
+                        <p style="color:#64748b; font-size:11px;">SOON</p>
+                    </div>
+                    <div class="game-card" onclick="alert('Coming Soon!')">
+                        <div style="font-size:40px; opacity:0.3;">🎲</div>
+                        <h3>Roulette</h3>
+                        <p style="color:#64748b; font-size:11px;">SOON</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="p-aviator" class="page">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <button onclick="nav('lobby')" style="background:none; border:none; color:var(--primary); font-weight:bold;">← LOBBY</button>
+                    <div class="history-bar" id="hist-list"></div>
+                </div>
                 <div class="aviator-box">
                     <div id="countdown-box"><div id="timer-val" class="timer-num">3</div></div>
                     <div id="multiplier" style="display:none;">1.00x</div>
                     <div id="rocket">🚀</div>
-                    <div id="crash-txt" class="crash-msg">FLEW AWAY!</div>
+                    <div id="crash-txt" style="position:absolute; top:60%; left:50%; transform:translate(-50%,-50%); color:var(--danger); font-size:25px; display:none;">FLEW AWAY!</div>
                 </div>
                 <div class="bet-box">
                     <input type="number" id="bet-amount" value="100" class="auth-input">
@@ -62,6 +109,11 @@
                 </div>
             </div>
         </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="nav('lobby', this)">Home</div>
+            <div class="nav-item" onclick="openMaster()">Bank</div>
+        </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -69,35 +121,44 @@
     <script>
         const config = { apiKey: "AIzaSyDdURW00a3AheG1SZI67Itu_LZ9ddPBWG0", databaseURL: "https://xbat-5c582-default-rtdb.firebaseio.com", projectId: "xbat-5c582" };
         firebase.initializeApp(config); const db = firebase.database();
-        let curU = localStorage.getItem('activeUser') || "Krish", isPlaying = false, currentMul = 1.0, gameInterval, betAmt = 0, isBetPlaced = false;
-        let canPlaceBet = true;
+        let curU = localStorage.getItem('activeUser'), isPlaying = false, currentMul = 1.0, gameInterval, betAmt = 0, isBetPlaced = false, canPlaceBet = true;
 
         const sndTick = document.getElementById('snd-tick');
         const sndFly = document.getElementById('snd-fly');
         const sndCrash = document.getElementById('snd-crash');
 
-        function init() {
-            db.ref('users/'+curU+'/balance').on('value', s => { document.getElementById('user-bal').innerText = Math.floor(s.val() || 0); });
-            startCountdown();
+        function doAuth() {
+            let u = document.getElementById('u-login').value.trim();
+            let p = document.getElementById('p-login').value.trim();
+            if(!u || !p) return;
+            db.ref('users/'+u).once('value', s => {
+                if(s.exists() && s.val().password === p) { localStorage.setItem('activeUser',u); location.reload(); }
+                else if(!s.exists()) { db.ref('users/'+u).set({password:p, balance:10000}).then(()=> { localStorage.setItem('activeUser',u); location.reload(); }); }
+            });
         }
 
-        function startCountdown() {
-            // Stop ALL sounds before starting new round
-            sndFly.pause(); sndFly.currentTime = 0;
-            sndCrash.pause(); sndCrash.currentTime = 0;
+        function init() {
+            if(!curU) return;
+            document.getElementById('auth-screen').style.display='none';
+            document.getElementById('main-app').style.display='block';
+            document.getElementById('u-name-top').innerText = curU;
+            db.ref('users/'+curU+'/balance').on('value', s => { document.getElementById('user-bal').innerText = Math.floor(s.val() || 0); });
+        }
 
-            canPlaceBet = true;
-            document.getElementById('btn-bet').classList.remove('btn-disabled');
-            document.getElementById('btn-bet').innerText = "PLACE BET";
-            document.getElementById('countdown-box').style.display = 'block';
-            document.getElementById('multiplier').style.display = 'none';
-            document.getElementById('rocket').style.display = 'none';
-            document.getElementById('crash-txt').style.display = 'none';
-            
+        function nav(p, el) {
+            if(p !== 'aviator') stopAviatorLogic();
+            document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+            document.getElementById('p-'+p).classList.add('active');
+        }
+
+        function openAviator() { nav('aviator'); startCountdown(); }
+
+        function startCountdown() {
+            canPlaceBet = true; resetUI();
             let count = 3; document.getElementById('timer-val').innerText = count;
             let t = setInterval(() => {
                 sndTick.play();
-                count--; 
+                count--;
                 if(count > 0) document.getElementById('timer-val').innerText = count;
                 else { clearInterval(t); launchRocket(); }
             }, 1000);
@@ -105,23 +166,15 @@
 
         function launchRocket() {
             canPlaceBet = false;
-            if(!isBetPlaced) {
-                document.getElementById('btn-bet').classList.add('btn-disabled');
-                document.getElementById('btn-bet').innerText = "BETTING CLOSED";
-            }
             document.getElementById('countdown-box').style.display = 'none';
             document.getElementById('multiplier').style.display = 'block';
             document.getElementById('rocket').style.display = 'block';
-            
-            // Engine sound start
-            sndFly.play().catch(e => console.log("Sound block by browser"));
-            
+            sndFly.play();
             isPlaying = true; currentMul = 1.0;
             db.ref('game_settings/aviator_crash').once('value', s => {
-                let max = s.val() || 3.0;
-                let actualCrash = (Math.random() * (max - 1.1) + 1.1).toFixed(2);
+                let actualCrash = (Math.random() * ((s.val()||3.0) - 1.1) + 1.1).toFixed(2);
                 gameInterval = setInterval(() => {
-                    currentMul += 0.02 + (currentMul/160);
+                    currentMul += 0.03 + (currentMul/150);
                     document.getElementById('multiplier').innerText = currentMul.toFixed(2) + "x";
                     if(isBetPlaced) {
                         document.getElementById('btn-cash').style.display = 'block';
@@ -131,46 +184,28 @@
                     let r = document.getElementById('rocket');
                     r.style.transform = `translate(${currentMul * 25}px, -${currentMul * 18}px) rotate(-45deg)`;
                     if(currentMul >= actualCrash) crashGame(actualCrash);
-                }, 60);
+                }, 80);
             });
         }
 
         function crashGame(res) {
             clearInterval(gameInterval); isPlaying = false; isBetPlaced = false;
-            
-            // STOP Fly sound IMMEDIATELY
-            sndFly.pause(); 
-            sndFly.currentTime = 0;
-            
-            // PLAY Crash sound once
-            sndCrash.play();
-            
-            document.getElementById('multiplier').style.color = 'var(--danger)';
+            sndFly.pause(); sndFly.currentTime = 0; sndCrash.play();
+            document.getElementById('multiplier').style.color = 'red';
             document.getElementById('crash-txt').style.display = 'block';
             document.getElementById('btn-cash').style.display = 'none';
             document.getElementById('btn-bet').style.display = 'block';
-            
-            let h = document.createElement('div'); h.className = 'hist-item'; h.innerText = res + 'x';
-            let list = document.getElementById('hist-list');
-            list.prepend(h); if(list.children.length > 10) list.lastChild.remove();
-
-            setTimeout(() => { 
-                document.getElementById('rocket').style.transform = "translate(0,0) rotate(-45deg)"; 
-                document.getElementById('multiplier').style.color = "#fff";
-                startCountdown(); 
-            }, 3000);
+            document.getElementById('btn-bet').innerText = "PLACE BET";
+            let h = document.createElement('div'); h.className='hist-item'; h.innerText=res+'x';
+            document.getElementById('hist-list').prepend(h);
+            setTimeout(() => { if(document.getElementById('p-aviator').classList.contains('active')) startCountdown(); }, 3000);
         }
 
         function placeBet() {
             if(!canPlaceBet) return;
             let a = parseInt(document.getElementById('bet-amount').value);
             db.ref('users/'+curU+'/balance').once('value', s => {
-                if(s.val() >= a && a > 0) {
-                    betAmt = a; isBetPlaced = true;
-                    db.ref('users/'+curU).update({balance: s.val() - a});
-                    document.getElementById('btn-bet').innerText = "WAITING...";
-                    document.getElementById('btn-bet').classList.add('btn-disabled');
-                }
+                if(s.val() >= a) { betAmt = a; isBetPlaced = true; db.ref('users/'+curU).update({balance: s.val()-a}); document.getElementById('btn-bet').innerText = "WAITING..."; }
             });
         }
 
@@ -178,15 +213,23 @@
             if(!isPlaying || !isBetPlaced) return;
             let win = Math.floor(betAmt * currentMul);
             db.ref('users/'+curU+'/balance').once('value', s => {
-                db.ref('users/'+curU).update({balance: s.val() + win});
-                isBetPlaced = false; betAmt = 0;
-                document.getElementById('btn-cash').style.display = 'none';
-                document.getElementById('btn-bet').style.display = 'block';
-                document.getElementById('btn-bet').innerText = "BETTING CLOSED";
+                db.ref('users/'+curU).update({balance: s.val()+win});
+                isBetPlaced = false; betAmt = 0; document.getElementById('btn-cash').style.display='none'; document.getElementById('btn-bet').style.display='block';
             });
         }
 
-        function doLogout() { if(confirm("Logout?")) { localStorage.removeItem('activeUser'); location.reload(); } }
+        function resetUI() {
+            document.getElementById('countdown-box').style.display = 'block';
+            document.getElementById('multiplier').style.display = 'none';
+            document.getElementById('multiplier').style.color = '#fff';
+            document.getElementById('rocket').style.display = 'none';
+            document.getElementById('rocket').style.transform = "translate(0,0) rotate(-45deg)";
+            document.getElementById('crash-txt').style.display = 'none';
+        }
+
+        function stopAviatorLogic() { clearInterval(gameInterval); sndFly.pause(); sndFly.currentTime = 0; isPlaying = false; }
+        function doLogout() { localStorage.removeItem('activeUser'); location.reload(); }
+        function openMaster() { if(prompt("PIN:")==="9991") alert("Admin Panel Connected!"); }
         init();
     </script>
 </body>
