@@ -3,91 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>10X-BAT MASTER</title>
+    <title>10X-BAT MEGA CASINO</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --primary: #38bdf8; --success: #10b981; --danger: #ef4444; --accent: #f59e0b; --text: #f8fafc; }
+        :root { --bg: #020617; --card: #1e293b; --primary: #38bdf8; --success: #10b981; --danger: #ef4444; --accent: #f59e0b; --text: #f8fafc; --nav: #0f172a; }
         body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; user-select: none; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        .auth-box { background: var(--card); padding: 30px; border-radius: 16px; width: 90%; max-width: 400px; text-align: center; margin: auto; border: 1px solid #334155; }
-        .auth-input { width: 100%; background: #000; border: 1px solid #334155; color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; }
-        header { background: rgba(15, 23, 42, 0.95); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
-        .wallet { background: #000; border: 1px solid var(--success); color: var(--success); padding: 5px 15px; border-radius: 20px; font-weight: bold; }
-        .page { display: none; padding: 15px; height: 80vh; overflow-y: auto; }
+        header { background: var(--nav); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1e293b; position: sticky; top: 0; z-index: 100; }
+        .logo { font-family: 'Orbitron'; font-size: 22px; color: var(--text); }
+        .logo span { color: var(--primary); }
+        .wallet { background: linear-gradient(90deg, #000, #1e293b); border: 1px solid var(--success); padding: 6px 15px; border-radius: 20px; font-weight: bold; color: var(--success); display: flex; align-items: center; gap: 5px; }
+        
+        /* Tab System */
+        .category-bar { display: flex; gap: 10px; overflow-x: auto; padding: 15px; background: var(--bg); border-bottom: 1px solid #1e293b; scrollbar-width: none; }
+        .cat-btn { background: var(--card); border: 1px solid #334155; padding: 8px 18px; border-radius: 8px; white-space: nowrap; font-weight: bold; cursor: pointer; color: #94a3b8; }
+        .cat-btn.active { background: var(--primary); color: #000; border: none; }
+
+        .app-content { flex: 1; overflow-y: auto; padding-bottom: 90px; }
+        .page { display: none; padding: 15px; }
         .page.active { display: block; }
-        .card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 10px; border: 1px solid #475569; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #0f172a; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #334155; }
-        .nav-item { color: #64748b; font-size: 12px; font-weight: bold; cursor: pointer; }
+
+        /* Game Cards */
+        .game-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .game-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #334155; position: relative; }
+        .game-img { width: 100%; height: 100px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+        .game-info { padding: 8px; text-align: center; }
+        .game-name { font-weight: bold; font-size: 14px; margin-bottom: 5px; }
+        .play-btn { background: var(--primary); color: #000; border: none; width: 100%; padding: 6px; border-radius: 5px; font-weight: bold; font-size: 12px; }
+
+        /* Transaction Passbook */
+        .passbook-item { background: #1e293b; padding: 12px; border-radius: 10px; margin-bottom: 8px; border-left: 4px solid var(--primary); display: flex; justify-content: space-between; }
+        .status-success { color: var(--success); }
+        .status-pending { color: var(--accent); }
+
+        /* Navigation */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--nav); display: flex; justify-content: space-around; padding: 12px 0; border-top: 2px solid #1e293b; z-index: 100; }
+        .nav-item { color: #64748b; font-size: 11px; font-weight: bold; cursor: pointer; text-align: center; width: 20%; }
         .nav-item.active { color: var(--primary); }
-        .admin-user-card { border-left: 4px solid var(--primary); background: #1e293b; padding: 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-icon { font-size: 20px; display: block; margin-bottom: 2px; }
+
+        /* Admin/Rules Popup */
+        #popup-rules { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--primary); padding: 20px; border-radius: 15px; z-index: 500; display: none; width: 85%; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 400; display: none; }
     </style>
 </head>
 <body>
-    <div id="auth-screen" style="display: flex; height: 100vh;">
-        <div class="auth-box">
-            <h1 style="font-family:'Orbitron'">10X<span>BAT</span></h1>
-            <input type="text" id="u" class="auth-input" placeholder="Username">
-            <input type="password" id="p" class="auth-input" placeholder="Password">
-            <button onclick="doAuth('login')" style="width:100%; padding:12px; background:var(--primary); border:none; border-radius:8px; font-weight:bold;">LOGIN</button>
-            <p onclick="doAuth('signup')" style="color:var(--primary); margin-top:15px; cursor:pointer;">New? Create Account</p>
-        </div>
+
+    <header>
+        <div class="logo">10X<span>BAT</span></div>
+        <div class="wallet">₹ <span id="user-bal">0</span></div>
+    </header>
+
+    <div class="category-bar">
+        <div class="cat-btn active" onclick="showTab('casino', this)">🎰 Casino</div>
+        <div class="cat-btn" onclick="showTab('slots', this)">🍒 Slots</div>
+        <div class="cat-btn" onclick="showTab('sports', this)">🏏 Sports</div>
+        <div class="cat-btn" onclick="showTab('crash', this)">🚀 Crash</div>
     </div>
 
-    <div id="main-app" style="display:none;">
-        <header>
-            <div style="font-family:'Orbitron'">10X<span>BAT</span></div>
-            <div class="wallet">₹ <span id="bal_disp">0</span></div>
-        </header>
+    <div class="app-content">
+        <div id="p-casino" class="page active">
+            <div class="game-grid">
+                <div class="game-card"><div class="game-img">🎲</div><div class="game-info"><div class="game-name">Roulette</div><button class="play-btn" onclick="openRules('Roulette')">Play</button></div></div>
+                <div class="game-card"><div class="game-img">🐉</div><div class="game-info"><div class="game-name">Dragon Tiger</div><button class="play-btn" onclick="openRules('Dragon Tiger')">Play</button></div></div>
+                <div class="game-card"><div class="game-img">🃏</div><div class="game-info"><div class="game-name">Andar Bahar</div><button class="play-btn" onclick="openRules('Andar Bahar')">Play</button></div></div>
+            </div>
+        </div>
 
-        <div id="p-home" class="page active">
-            <div class="card"><h3>Welcome, <span id="user_nm"></span></h3><p>Games start soon!</p></div>
-            <div class="card"><h4>🚀 Aviator</h4><button style="width:100%; padding:10px; background:var(--danger); border:none; color:#fff; border-radius:5px;">PLAY NOW</button></div>
+        <div id="p-slots" class="page">
+            <div class="game-grid" id="slots-list">
+                </div>
+        </div>
+
+        <div id="p-sports" class="page">
+            <div class="game-card" style="margin-bottom:15px; padding:15px;">
+                <h4 style="margin:0">🏏 IND vs AUS (Live)</h4>
+                <div style="display:flex; justify-content:space-between; margin-top:10px;">
+                    <button class="play-btn" style="width:45%" onclick="alert('Bet Placed on IND')">IND (1.85)</button>
+                    <button class="play-btn" style="width:45%; background:var(--danger)" onclick="alert('Bet Placed on AUS')">AUS (2.10)</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="p-history" class="page">
+            <h3>💳 Transaction History</h3>
+            <div id="tx-list">No transactions yet.</div>
         </div>
 
         <div id="p-bank" class="page">
-            <h3>Withdraw</h3>
-            <input type="text" id="upi_id" class="auth-input" placeholder="UPI ID">
-            <input type="number" id="amt_val" class="auth-input" placeholder="Amount">
-            <button onclick="withdraw()" style="width:100%; padding:12px; background:var(--success); border:none; border-radius:8px; color:#000; font-weight:bold;">WITHDRAW</button>
+            <h3>💸 Withdraw Funds</h3>
+            <div class="game-card" style="padding:15px;">
+                <input type="text" id="upi-val" placeholder="UPI ID" style="width:100%; padding:10px; background:#000; border:1px solid #334155; color:#fff; margin-bottom:10px; border-radius:8px;">
+                <input type="number" id="amt-val" placeholder="Amount (Min ₹500)" style="width:100%; padding:10px; background:#000; border:1px solid #334155; color:#fff; margin-bottom:15px; border-radius:8px;">
+                <button class="play-btn" style="padding:12px; font-size:16px;" onclick="reqWithdraw()">Withdraw Now</button>
+            </div>
         </div>
 
-        <div id="p-admin" class="page">
-            <h2 style="color:var(--primary)">🛠️ MASTER PANEL</h2>
-            <div id="admin-users-list">Loading Users...</div>
+        <div id="p-master" class="page" style="background:#000;">
+            <h2 style="color:var(--primary)">🛠️ Master Control</h2>
+            <div id="admin-user-data">Loading users...</div>
             <hr>
             <h4>Withdraw Requests</h4>
             <div id="admin-withdrawals">No requests.</div>
         </div>
+    </div>
 
-        <div class="bottom-nav">
-            <div class="nav-item active" onclick="nav('home', this)">Home</div>
-            <div class="nav-item" id="bank-btn" onclick="handleAdminTap(this)">Bank</div>
-        </div>
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="nav('casino', this)"><span class="nav-icon">🏠</span>Home</div>
+        <div class="nav-item" onclick="nav('slots', this)"><span class="nav-icon">🎰</span>Slots</div>
+        <div class="nav-item" onclick="nav('history', this)"><span class="nav-icon">📜</span>Passbook</div>
+        <div id="bank-btn" class="nav-item" onclick="handleMasterTap(this)"><span class="nav-icon">💰</span>Bank</div>
+    </div>
+
+    <div class="overlay" onclick="closePopup()"></div>
+    <div id="popup-rules">
+        <h3 id="rule-title">Game Rules</h3>
+        <p id="rule-text">Rules and instructions will appear here.</p>
+        <button class="play-btn" onclick="closePopup()">CLOSE</button>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <script>
-        const conf = { apiKey: "AIzaSyDdURW00a3AheG1SZI67Itu_LZ9ddPBWG0", databaseURL: "https://xbat-5c582-default-rtdb.firebaseio.com", projectId: "xbat-5c582" };
-        firebase.initializeApp(conf); const db = firebase.database();
-        let curU = ""; let curB = 0; let tapCount = 0;
-
-        function doAuth(t) {
-            let u = document.getElementById('u').value.trim();
-            let p = document.getElementById('p').value.trim();
-            if(!u) return;
-            db.ref('users/' + u).once('value', s => {
-                if(t==='login'){ if(s.exists() && s.val().password===p){ curU=u; launch(); }else alert("Error"); }
-                else { if(s.exists()) alert("Exists"); else db.ref('users/'+u).set({password:p, balance:10000}).then(()=>{curU=u; launch();}); }
-            });
-        }
-
-        function launch() {
-            document.getElementById('auth-screen').style.display='none';
-            document.getElementById('main-app').style.display='block';
-            document.getElementById('user_nm').innerText = curU;
-            db.ref('users/'+curU+'/balance').on('value', s => { curB=s.val(); document.getElementById('bal_disp').innerText=curB; });
-            loadMasterData();
-        }
+        const config = { apiKey: "AIzaSyDdURW00a3AheG1SZI67Itu_LZ9ddPBWG0", databaseURL: "https://xbat-5c582-default-rtdb.firebaseio.com", projectId: "xbat-5c582" };
+        firebase.initializeApp(config); const db = firebase.database();
+        let curU = localStorage.getItem('user') || "Krish_Master"; // For demo
+        let curB = 0; let mTap = 0;
 
         function nav(p, el) {
             document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active'));
@@ -95,49 +135,75 @@
             document.getElementById('p-'+p).classList.add('active'); el.classList.add('active');
         }
 
-        function handleAdminTap(el) {
-            tapCount++;
-            if(tapCount >= 5) { nav('admin', el); tapCount = 0; } 
-            else { nav('bank', el); }
+        function showTab(t, el) {
+            document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+            el.classList.add('active');
+            document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active'));
+            document.getElementById('p-'+t).classList.add('active');
         }
 
-        function loadMasterData() {
+        function handleMasterTap(el) {
+            mTap++;
+            if(mTap >= 5) { nav('master', el); mTap=0; }
+            else { nav('bank', el); setTimeout(()=>mTap=0, 2000); }
+        }
+
+        function loadData() {
+            db.ref('users/'+curU+'/balance').on('value', s => { curB=s.val(); document.getElementById('user-bal').innerText=curB; });
+            db.ref('transactions/'+curU).on('value', s => {
+                let h = ""; s.forEach(c => {
+                    h += `<div class="passbook-item">
+                        <div><b>${c.val().type}</b><br><small>${c.val().time}</small></div>
+                        <div class="status-${c.val().status.toLowerCase()}">₹${c.val().amt}</div>
+                    </div>`;
+                });
+                document.getElementById('tx-list').innerHTML = h || "No History.";
+            });
+            // Master Data
             db.ref('users').on('value', s => {
-                let html = "";
-                s.forEach(child => {
-                    html += `<div class="admin-user-card">
-                        <span>${child.key} (₹${child.val().balance})</span>
-                        <button onclick="editBal('${child.key}')" style="background:var(--primary); border:none; padding:5px; border-radius:4px;">Edit</button>
+                let h = ""; s.forEach(c => {
+                    h += `<div class="passbook-item" style="border-left:4px solid var(--primary)">
+                        <span>${c.key} (₹${c.val().balance})</span>
+                        <button onclick="editB('${c.key}')" style="background:var(--primary); border:none; padding:5px; border-radius:4px;">Edit</button>
                     </div>`;
                 });
-                document.getElementById('admin-users-list').innerHTML = html;
-            });
-            db.ref('withdrawals').on('value', s => {
-                let html = "";
-                s.forEach(child => {
-                    html += `<div class="card">
-                        <p>${child.val().user}: ₹${child.val().amount}</p>
-                        <small>${child.val().upi}</small>
-                        <button onclick="db.ref('withdrawals/${child.key}').remove()" style="background:var(--danger); border:none; padding:5px; margin-left:10px; color:#fff;">Done</button>
-                    </div>`;
-                });
-                document.getElementById('admin-withdrawals').innerHTML = html || "No pending requests.";
+                document.getElementById('admin-user-data').innerHTML = h;
             });
         }
 
-        function editBal(user) {
-            let n = prompt("Enter new balance for " + user);
-            if(n) db.ref('users/' + user).update({ balance: parseInt(n) });
-        }
+        function editB(u) { let n = prompt("New Bal:"); if(n) db.ref('users/'+u).update({balance:parseInt(n)}); }
 
-        function withdraw() {
-            let a = parseInt(document.getElementById('amt_val').value);
+        function reqWithdraw() {
+            let a = parseInt(document.getElementById('amt-val').value);
             if(a >= 500 && a <= curB) {
-                db.ref('users/'+curU).update({ balance: curB - a });
-                db.ref('withdrawals').push({ user: curU, amount: a, upi: document.getElementById('upi_id').value });
+                db.ref('users/'+curU).update({balance:curB-a});
+                let t = new Date().toLocaleString();
+                db.ref('transactions/'+curU).push({type:"Withdrawal", amt:a, status:"Pending", time:t});
+                db.ref('withdrawals').push({user:curU, amt:a, upi:document.getElementById('upi-val').value, time:t});
                 alert("Request Sent!");
-            } else alert("Error!");
+            } else alert("Invalid Amount!");
         }
+
+        function openRules(name) {
+            document.getElementById('rule-title').innerText = name + " Rules";
+            document.getElementById('rule-text').innerText = "1. Minimum Bet: ₹10\n2. Max Payout: 100x\n3. Instant Withdrawal Available.";
+            document.querySelector('.overlay').style.display = 'block';
+            document.getElementById('popup-rules').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.querySelector('.overlay').style.display = 'none';
+            document.getElementById('popup-rules').style.display = 'none';
+        }
+
+        // Generate 300 Slots Demo
+        let slotsHtml = "";
+        for(let i=1; i<=20; i++) {
+            slotsHtml += `<div class="game-card"><div class="game-img">🎰</div><div class="game-info"><div class="game-name">Slot Game ${i}</div><button class="play-btn" onclick="openRules('Slot ${i}')">Play</button></div></div>`;
+        }
+        document.getElementById('slots-list').innerHTML = slotsHtml;
+
+        loadData();
     </script>
 </body>
 </html>
